@@ -1,20 +1,17 @@
 package lib
 
-import stubs.WorkflowStub
 import utilities.ScriptLoader
 
 import static utilities.AssertAndExecute.assertCommandRegexAndExecute
 
-import utilities.AssertCommandAndExecute
+
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
 
 import org.junit.Before
 import org.junit.Test
 
-import org.codehaus.groovy.control.CompilerConfiguration
-
-class ShellTest implements AssertCommandAndExecute {
+class ShellTest {
 
     def shell
     def shellCommands = []

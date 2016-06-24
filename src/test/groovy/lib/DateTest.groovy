@@ -2,14 +2,13 @@ package lib
 
 import org.junit.Before
 import org.junit.Test
-import utilities.AssertCommandAndExecute
+
 import utilities.ScriptLoader
 
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
-import static utilities.AssertAndExecute.assertCommandRegexAndExecute
 
-class DateTest implements AssertCommandAndExecute {
+class DateTest {
 
     def date
 
