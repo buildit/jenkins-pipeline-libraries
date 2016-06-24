@@ -5,8 +5,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import stubs.WorkflowStub
-import utilities.ScriptLoader
 
 import static org.hamcrest.core.StringContains.containsString
 import static org.hamcrest.core.IsEqual.equalTo
@@ -17,6 +15,10 @@ import static utilities.ReadFromResources.readFromResources
 
 class CloudfoundryTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
+    public static final String SCRIPT_NAME = "lib/cloudfoundry.groovy"
     def cloudfoundry
     def shell
     def errors = []
@@ -32,7 +34,10 @@ class CloudfoundryTest {
 
     @Before
     void setUp() {
-        cloudfoundry = ScriptLoader.load("lib/cloudfoundry.groovy")
+        def CompilerConfiguration compilerConfiguration = new CompilerConfiguration()
+        compilerConfiguration.scriptBaseClass = new WorkflowStub().getClass().getCanonicalName()
+        def Binding binding = new Binding()
+        cloudfoundry = new GroovyShell(this.class.classLoader, binding, compilerConfiguration).evaluate(new File(SCRIPT_NAME))
         errors = []
         shellCommands = []
         shell = new Object()

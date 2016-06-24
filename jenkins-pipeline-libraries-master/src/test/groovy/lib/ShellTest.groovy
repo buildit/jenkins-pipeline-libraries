@@ -1,8 +1,5 @@
 package lib
 
-import stubs.WorkflowStub
-import utilities.ScriptLoader
-
 import static utilities.AssertAndExecute.assertCommandRegexAndExecute
 
 import utilities.AssertCommandAndExecute
@@ -16,12 +13,17 @@ import org.codehaus.groovy.control.CompilerConfiguration
 
 class ShellTest implements AssertCommandAndExecute {
 
+    public static final String SCRIPT_NAME = "lib/shell.groovy"
     def shell
     def shellCommands = []
 
+
     @Before
     void setUp() {
-        shell = ScriptLoader.load("lib/shell.groovy")
+        def CompilerConfiguration compilerConfiguration = new CompilerConfiguration()
+        compilerConfiguration.scriptBaseClass = new WorkflowStub().getClass().getCanonicalName()
+        def Binding binding = new Binding()
+        shell = new GroovyShell(this.class.classLoader, binding, compilerConfiguration).evaluate(new File(SCRIPT_NAME))
         shellCommands = []
         shell.metaClass.sh = { String s -> shellCommands.add(s)}
     }

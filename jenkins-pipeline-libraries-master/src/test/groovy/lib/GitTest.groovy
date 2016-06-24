@@ -3,8 +3,6 @@ package lib
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.junit.Before
 import org.junit.Test
-import stubs.WorkflowStub
-import utilities.ScriptLoader
 
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.hamcrest.core.StringContains.containsString
@@ -13,13 +11,19 @@ import static org.junit.Assert.assertThat
 
 class GitTest {
 
+    public static final String SCRIPT_NAME = "lib/git.groovy"
     def GroovyShell shell
     def git
     def shellCommands = []
 
     @Before
     void setUp() {
-        git = ScriptLoader.load("lib/git.groovy")
+        def CompilerConfiguration compilerConfiguration = new CompilerConfiguration()
+        compilerConfiguration.scriptBaseClass = new WorkflowStub().getClass().getCanonicalName()
+        def Binding binding = new Binding()
+        shell = new GroovyShell(this.class.classLoader, binding, compilerConfiguration)
+
+        git = shell.evaluate(new File(SCRIPT_NAME))
         git.metaClass.sh = { String s -> shellCommands.add(s)}
     }
 

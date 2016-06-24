@@ -1,0 +1,1 @@
+docker login -u AWS -p CiD6lc4XIJw -e none https://601737501053.dkr.ecr.us-west-2.amazonaws.com
