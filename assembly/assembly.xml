@@ -3,10 +3,15 @@
     <formats>
         <format>zip</format>
     </formats>
+    <baseDirectory>/</baseDirectory>
     <fileSets>
         <fileSet>
             <outputDirectory>lib</outputDirectory>
             <directory>lib</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>templates</outputDirectory>
+            <directory>templates</directory>
         </fileSet>
     </fileSets>
 </assembly>

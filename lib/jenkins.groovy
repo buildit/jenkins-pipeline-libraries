@@ -2,7 +2,7 @@ import groovy.json.JsonSlurper
 
 template = load "lib/template.groovy"
 filesystem = load "lib/filesystem.groovy"
-templateFiles = [polling: readFile("lib/templates/app-polling-pipeline.xml"), manual: readFile("lib/templates/app-manual-pipeline.xml")]
+templateFiles = [polling: readFile("templates/app-polling-pipeline.xml"), manual: readFile("templates/app-manual-pipeline.xml")]
 
 def createPipelineJob(jobName, gitUrl, pipelinePath, shouldPoll, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll){
     def tmpFile = UUID.randomUUID().toString() + ".xml"
