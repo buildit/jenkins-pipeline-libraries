@@ -37,13 +37,13 @@ class WorkflowStub extends Script {
         return new File(path as String).text
     }
 
-    def writeFile(file, text) {
-        def targetFile = new File(file)
+    def writeFile(args) {
+        def targetFile = new File(args.file)
         if (!fileExists(targetFile.getAbsolutePath())) {
             println(targetFile.getAbsolutePath())
             targetFile.createNewFile()
         }
-        targetFile.write(text)
+        targetFile.write(args.text)
     }
 
     def fileExists(path) {

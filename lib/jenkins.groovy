@@ -17,7 +17,7 @@ def createPipelineJob(jobName, gitUrl, pipelinePath, shouldPoll, jenkinsUrl, jen
             jenkins_scm_poll: jenkinsScmPoll
         ]
     )
-    writeFile(tmpFile, jobXML)
+    writeFile(file: tmpFile, text: jobXML)
 
     // create the jenkins job the application pipeline
     sh("curl --header 'Content-Type: application/xml' --data-binary @${tmpFile} ${jenkinsUrl}/createItem?name=${jobName}")
