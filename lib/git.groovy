@@ -1,3 +1,4 @@
+shell = load "lib/shell.groovy"
 
 def mergeBranch(source, target, repositoryUrl, credentialsId){
     ws{

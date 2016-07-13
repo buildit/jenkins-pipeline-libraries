@@ -35,7 +35,7 @@ node() {
 
     def majorVersion = pom.majorVersion(pwd() + "/pom.xml")
     def minorVersion = pom.minorVersion(pwd() + "/pom.xml").toInteger()
-    def patchVersion = pom.majorVersion(pwd() + "/pom.xml").toInteger()
+    def patchVersion = pom.patchVersion(pwd() + "/pom.xml").toInteger()
     def newVersion = "${majorVersion}.${minorVersion + 1}.0"
     if (patchVersion > 0) {
         newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
