@@ -34,7 +34,7 @@ class WorkflowStub extends Script {
     }
 
     def readFile(path) {
-        return new File(path).text
+        return new File(path as String).text
     }
 
     def writeFile(file, text) {
