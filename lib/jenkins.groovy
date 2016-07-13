@@ -19,7 +19,7 @@ def createPipelineJob(jobName, gitUrl, pipelinePath, shouldPoll, jenkinsUrl, jen
     writeFile(tmpFile, jobXML)
 
     // create the jenkins job the application pipeline
-    sh("curl --header 'Content-Type: application/xml' --data-binary @${tmpFile} ${jenkinsUrl}createItem?name=${jobName}")
+    sh("curl --header 'Content-Type: application/xml' --data-binary @${tmpFile} ${jenkinsUrl}/createItem?name=${jobName}")
 
     sh("rm ${tmpFile}")
 }
@@ -34,7 +34,7 @@ def createFreestyleJobs(gitUrl, jenkinsUrl){
         def filepath = listing[i]
         if (filepath != jenkinsJobsPath) {
             def jobName = new File(filepath).getName().split("\\.")[0]
-            sh("curl --header 'Content-Type: application/xml' --data-binary @${filepath} ${jenkinsUrl}createItem?name=${jobName}")
+            sh("curl --header 'Content-Type: application/xml' --data-binary @${filepath} ${jenkinsUrl}/createItem?name=${jobName}")
         }
     }
 }

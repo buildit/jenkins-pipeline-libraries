@@ -1,6 +1,4 @@
 node() {
-    checkout scm
-
     shell = load "lib/shell.groovy"
     pom = load "lib/pom.groovy"
     git = load "lib/git.groovy"
@@ -36,8 +34,7 @@ stage 'increment minor version'
 node() {
     def majorVersion = pom.majorVersion(pwd() + "/pom.xml")
     def minorVersion = pom.minorVersion(pwd() + "/pom.xml").toInteger() + 1
-    def patchVersion = pom.patchVersion(pwd() + "/pom.xml")
-    def newVersion = "${majorVersion}.${minorVersion}.${patchVersion}"
+    def newVersion = "${majorVersion}.${minorVersion}.0"
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         sh("mvn versions:set -DnewVersion=${newVersion} versions:commit")

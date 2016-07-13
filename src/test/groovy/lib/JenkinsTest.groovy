@@ -45,7 +45,7 @@ class JenkinsTest {
         // clean up file created as shell is mocked
         new File("temp_file.xml").delete()
 
-        assertThat(shellCommands, hasItem("curl --header 'Content-Type: application/xml' --data-binary @temp_file.xml ${jenkinsUrl}createItem?name=${jobName}" as String))
+        assertThat(shellCommands, hasItem("curl --header 'Content-Type: application/xml' --data-binary @temp_file.xml ${jenkinsUrl}/createItem?name=${jobName}" as String))
     }
 
     @Test
@@ -58,7 +58,7 @@ class JenkinsTest {
         jenkins.createFreestyleJobs(gitUrl, jenkinsUrl)
 
         assertEquals(shellCommands.size(), 2)
-        assertThat(shellCommands, hasItem("curl --header 'Content-Type: application/xml' --data-binary @./jenkinsJobs/backup.xml ${jenkinsUrl}createItem?name=backup" as String))
-        assertThat(shellCommands, hasItem("curl --header 'Content-Type: application/xml' --data-binary @./jenkinsJobs/pr-builder.xml ${jenkinsUrl}createItem?name=pr-builder" as String))
+        assertThat(shellCommands, hasItem("curl --header 'Content-Type: application/xml' --data-binary @./jenkinsJobs/backup.xml ${jenkinsUrl}/createItem?name=backup" as String))
+        assertThat(shellCommands, hasItem("curl --header 'Content-Type: application/xml' --data-binary @./jenkinsJobs/pr-builder.xml ${jenkinsUrl}/createItem?name=pr-builder" as String))
     }
 }
