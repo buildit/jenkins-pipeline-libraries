@@ -8,17 +8,6 @@ node() {
     nexusHost = "http://nexus.riglet:9000/nexus"
 }
 
-
-node {
-   sh 'env > env.txt'
-   def envVars = readFile('env.txt').split("\r?\n")
-   for (int i=0; i < envVars.size(); i++) {
-       println envVars[i]
-   }
-   println env.GIT_BRANCH
-   println env.GIT_LOCAL_BRANCH
-}
-
 stage 'create package'
 node() {
     def pomVersion = pom.version(pwd() + "/pom.xml")
