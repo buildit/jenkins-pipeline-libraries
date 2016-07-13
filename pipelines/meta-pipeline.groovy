@@ -30,11 +30,16 @@ node() {
     }
 }
 
-stage 'increment minor version'
+stage 'increment version'
 node() {
+
     def majorVersion = pom.majorVersion(pwd() + "/pom.xml")
-    def minorVersion = pom.minorVersion(pwd() + "/pom.xml").toInteger() + 1
-    def newVersion = "${majorVersion}.${minorVersion}.0"
+    def minorVersion = pom.minorVersion(pwd() + "/pom.xml").toInteger()
+    def patchVersion = pom.majorVersion(pwd() + "/pom.xml").toInteger()
+    def newVersion = "${majorVersion}.${minorVersion + 1}.0"
+    if (patchVersion > 0) {
+        newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
+    }
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         sh("mvn versions:set -DnewVersion=${newVersion} versions:commit")
