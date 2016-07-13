@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.3">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>5</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.19.1">
+      <projectUrl>https://github.com/buildit/jenkins-pipeline-libraries/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.8">
+    <script>repoUrl = &quot;https://github.com/buildit/jenkins-pipeline-libraries.git&quot;
+
+node {
+    git poll: false, changelog: false, url: repoUrl, credentialsId: &quot;git-credentials&quot;, branch: &quot;master&quot;
+
+    gitUtils = load &quot;lib/git.groovy&quot;
+    ui = load &quot;lib/ui.groovy&quot;
+
+    stage &apos;branch selection&apos;
+    def branch = input(message: &quot;Select Branch&quot;, parameters: [ui.dropdown(&quot;branch&quot;, &quot;Branch&quot;, {
+        gitUtils.listBranches(repoUrl, &quot;master&quot;, &quot;git-credentials&quot;)
+       })], submitter: null)
+
+    sh(&quot;git checkout ${branch}&quot;)
+
+    pipeline = readFile(&quot;./pipelines/meta-pipeline.groovy&quot;)
+}
+
+evaluate(pipeline)
+
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+</flow-definition>
