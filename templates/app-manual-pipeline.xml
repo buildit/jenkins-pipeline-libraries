@@ -9,8 +9,8 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>{{git_url}}</url>
-          <credentialsId>{{jenkins_credentials}}</credentialsId>
+          <url>${git_url}</url>
+          <credentialsId>${jenkins_credentials}</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
@@ -24,7 +24,7 @@
         <hudson.plugins.git.extensions.impl.PruneStaleBranch/>
       </extensions>
     </scm>
-    <scriptPath>{{pipeline_script_path}}</scriptPath>
+    <scriptPath>${pipeline_script_path}</scriptPath>
   </definition>
   <concurrentBuild>false</concurrentBuild>
 </flow-definition>
