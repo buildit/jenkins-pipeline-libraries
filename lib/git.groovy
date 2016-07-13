@@ -23,5 +23,18 @@ def authenticatedUrl(url, username, password){
     return "${encodedUsername}:${encodedPassword}@" + bits[0] as String
 }
 
+def listBranches(repositoryUrl, branch, credentialsId){
+    ws{
+        git poll: false, changelog: false, url: repositoryUrl, branch: branch, credentialsId: credentialsId
+        def branches = shell.pipe("git branch -r").tokenize()
+        def result = []
+        for(int i=0; i < branches.size(); i++) {
+            result.add(branches[i].toString().replace("origin/", ""))
+        }
+
+        return result
+    }
+}
+
 // ensure we return 'this' on last line to allow this script to be loaded into flows
 return this

@@ -1,0 +1,2 @@
+  origin/master
+  origin/release/1.0

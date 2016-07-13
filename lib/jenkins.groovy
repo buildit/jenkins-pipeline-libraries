@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 
+shell = load "lib/shell.groovy"
 template = load "lib/template.groovy"
 filesystem = load "lib/filesystem.groovy"
 templateFiles = [polling: readFile("templates/app-polling-pipeline.xml"), manual: readFile("templates/app-manual-pipeline.xml")]

@@ -1,15 +1,15 @@
 package lib
 
-import org.codehaus.groovy.control.CompilerConfiguration
 import org.junit.Before
 import org.junit.Test
-import stubs.WorkflowStub
 import utilities.ScriptLoader
 
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.hamcrest.core.StringContains.containsString
 import static org.hamcrest.core.StringStartsWith.startsWith
 import static org.junit.Assert.assertThat
+import static utilities.AssertAndExecute.assertCommandAndExecute
+import static utilities.ResourcePath.resourcePath
 
 class GitTest {
 
@@ -50,8 +50,6 @@ class GitTest {
 
         assertThat(shellCommands[2], startsWith("git checkout ${target}"))
     }
-
-
 
     @Test
     void shouldMergeOrigin() {
@@ -96,5 +94,29 @@ class GitTest {
         assertThat(args.branch as String, equalTo(target))
         assertThat(args.url as String, equalTo(repositoryUrl))
         assertThat(args.credentialsId as String,  equalTo(credentialsId))
+    }
+
+    @Test
+    void shouldListBranches() {
+
+        def branch = "master"
+        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
+        def credentialsId = UUID.randomUUID().toString()
+        def expectedBranches = ["master", "release/1.0"]
+
+        def args = null
+
+        git.metaClass.git = { Map m -> args = m}
+
+        git.shell = new Object()
+        git.shell.metaClass.pipe = { String s ->
+            assertCommandAndExecute("git branch -r", s, {
+                return new File(resourcePath("branches.txt", "git")).text
+            })
+        }
+
+        def branches = git.listBranches(repositoryUrl, branch, credentialsId)
+
+        assertThat(branches, equalTo(expectedBranches))
     }
 }
