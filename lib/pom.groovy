@@ -13,6 +13,22 @@ def majorVersion(String path) {
     return ""
 }
 
+def minorVersion(String path) {
+    def version = version(path)
+    if(version.count(".") == 2){
+        return version.trim().split("\\.")[1]
+    }
+    return ""
+}
+
+def patchVersion(String path) {
+    def version = version(path)
+    if(version.count(".") == 2){
+        return version.trim().split("\\.")[2]
+    }
+    return ""
+}
+
 def artifactId(String path) {
     def contents = readFile(path)
     def project = new XmlSlurper().parseText(contents)
