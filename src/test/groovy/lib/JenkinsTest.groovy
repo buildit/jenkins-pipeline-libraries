@@ -34,13 +34,14 @@ class JenkinsTest {
     @Test
     void shouldCreatePipelineJob() {
         def jobName = "test-project"
+        def branch = "master"
         def gitUrl = "git@bitbucket.org:digitalrigbitbucketteam/test-project.git"
         def pipelinePath = "./piplines/staging.groovy"
 
         UUID.metaClass.static.randomUUID = { "temp_file" }
         template.metaClass.transform = { text, mapping -> "<xml>" }
 
-        jenkins.createPipelineJob(jobName, gitUrl, pipelinePath, true, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll)
+        jenkins.createPipelineJob(jobName, gitUrl, branch, pipelinePath, true, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll)
 
         // clean up file created as shell is mocked
         new File("temp_file.xml").delete()

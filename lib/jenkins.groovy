@@ -5,13 +5,14 @@ template = load "lib/template.groovy"
 filesystem = load "lib/filesystem.groovy"
 templateFiles = [polling: readFile("templates/app-polling-pipeline.xml"), manual: readFile("templates/app-manual-pipeline.xml")]
 
-def createPipelineJob(jobName, gitUrl, pipelinePath, shouldPoll, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll){
+def createPipelineJob(jobName, gitUrl, branch, pipelinePath, shouldPoll, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll){
     def tmpFile = UUID.randomUUID().toString() + ".xml"
     def templateFile = shouldPoll ? templateFiles["polling"] : templateFiles["manual"]
     def jobXML = template.transform(
         templateFile,
         [
             git_url: gitUrl,
+            branch: branch,
             pipeline_script_path: pipelinePath,
             jenkins_credentials: jenkinsCredentials,
             jenkins_scm_poll: jenkinsScmPoll
