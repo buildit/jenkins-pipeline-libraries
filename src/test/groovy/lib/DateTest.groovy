@@ -19,7 +19,7 @@ class DateTest {
 
     @Test
     void shouldPipeResult() {
-        def result = date.timestamp(new Date(20160624100859))
-        assertThat(result as String, equalTo("26081112132140"))
+        def result = date.timestamp(new Date(116,6,24,10,8,59))
+        assertThat(result as String, equalTo("20160724090859"))
     }
 }
