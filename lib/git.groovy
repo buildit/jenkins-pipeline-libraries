@@ -37,5 +37,13 @@ def listBranches(repositoryUrl, branch, credentialsId){
     }
 }
 
+def getShortCommit(commit = "HEAD") {
+    return shell.pipe("git rev-parse ${commit}").substring(0,6)
+}
+
+def getCommitMessage(commit = "HEAD") {
+    return shell.pipe("git log --format=%B -n 1 ${commit}")
+}
+
 // ensure we return 'this' on last line to allow this script to be loaded into flows
 return this

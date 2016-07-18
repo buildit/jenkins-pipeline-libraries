@@ -119,4 +119,33 @@ class GitTest {
 
         assertThat(branches, equalTo(expectedBranches))
     }
+
+    @Test
+    void shouldGetShortCommit() {
+        def commit = "23rnc2vn2vnf2mc2"
+
+        def shell = new Object()
+        shell.metaClass.pipe = { commit }
+        git.shell = shell
+
+        def shortCommit = git.getShortCommit()
+
+        assertThat(commit, startsWith(shortCommit))
+    }
+
+    @Test
+    void shouldGetCommitMessage() {
+        def shell = new Object()
+        def pipeCommands = []
+        shell.metaClass.pipe = { String s ->
+            pipeCommands.add(s)
+            return "Last message"
+        }
+        git.shell = shell
+
+        def commitMsg = git.getCommitMessage()
+
+        assertThat(pipeCommands[0], startsWith("git log"))
+        assertThat(commitMsg, equalTo("Last message"))
+    }
 }
