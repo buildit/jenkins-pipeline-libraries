@@ -2,6 +2,7 @@ node() {
     shell = load "lib/shell.groovy"
     pom = load "lib/pom.groovy"
     git = load "lib/git.groovy"
+    jenkinsTestRunner = load "src/it/jenkinsTestRunner.groovy"
 
     nexusHost = "http://nexus.riglet:9000/nexus"
 }
@@ -12,6 +13,7 @@ node() {
     def commitId = shell.pipe("git rev-parse HEAD")
 
     sh("mvn clean package")
+    jenkinsTestRunner.run("src/it/lib")
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
         def repositoryUrl = shell.pipe("git config --get remote.origin.url")
