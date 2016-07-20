@@ -10,11 +10,12 @@ def deploy(appName, description) {
 
 def waitUntilDeployed(appName) {
     for (int i=0; i < 10; i++) {
-        def status = shell.pipe("convox apps info --app ${appName}-staging | grep Status | sed 's/Status *\\(.*\\)/\\1/'")
+        def status = shell.pipe("convox apps info --app ${appName}-staging | grep Status | sed 's/Status *\\(.*\\)/\\1/'").trim()
         echo "${appName}-staging is ${status}"
         if (status == "running") return
         sleep 30
     }
+    error "Application failed to start running within 5 minutes"
 }
 
 return this
