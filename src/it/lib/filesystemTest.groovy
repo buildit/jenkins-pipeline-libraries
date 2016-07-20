@@ -1,61 +1,63 @@
+jenkinsUnit = load "src/it/jenkinsUnit/jenkinsUnit.groovy"
+
 filesystem = load "lib/filesystem.groovy"
 
-jenkinsTestRunner.test("should calculate same checksum for different folders with same content"){
+jenkinsUnit.test("should calculate same checksum for different folders with same content"){
     def src = createDirectoryWithRandomContent()
     def target = UUID.randomUUID().toString()
     copyDirectory(src, target)
     def srcChecksum = filesystem.dirChecksum(src)
     def targetChecksum = filesystem.dirChecksum(target)
-    jenkinsTestRunner.assertEquals(srcChecksum, targetChecksum)
+    jenkinsUnit.assertEquals(srcChecksum, targetChecksum)
     cleanUp(src)
     cleanUp(target)
 }
 
-jenkinsTestRunner.test("should calculate different checksum for different folders with different content"){
+jenkinsUnit.test("should calculate different checksum for different folders with different content"){
     def src = createDirectoryWithRandomContent()
     def target = createDirectoryWithRandomContent()
     def srcChecksum = filesystem.dirChecksum(src)
     def targetChecksum = filesystem.dirChecksum(target)
-    jenkinsTestRunner.assertNotEquals(srcChecksum, targetChecksum)
+    jenkinsUnit.assertNotEquals(srcChecksum, targetChecksum)
     cleanUp(src)
     cleanUp(target)
 }
 
-jenkinsTestRunner.test("should list all files in nested directories"){
+jenkinsUnit.test("should list all files in nested directories"){
     def path = UUID.randomUUID().toString()
     def expected = ["${path}".toString(), "${path}/somefile.txt".toString(), "${path}/a_directory".toString(), "${path}/a_directory/another.txt".toString()]
     sh("mkdir ${path}; echo 'test' > ${path}/somefile.txt; mkdir ${path}/a_directory; echo 'test' > ${path}/a_directory/another.txt")
     def actual = filesystem.listing(path)
-    jenkinsTestRunner.assertListEquals(expected, actual)
+    jenkinsUnit.assertListEquals(expected, actual)
     cleanUp(path)
 }
 
-jenkinsTestRunner.test("should exclude hidden files from listing"){
+jenkinsUnit.test("should exclude hidden files from listing"){
     def path = UUID.randomUUID().toString()
     def expected = ["${path}".toString()]
     sh("mkdir ${path}; echo 'test' > ${path}/.hidden;")
     def actual = filesystem.listing(path)
-    jenkinsTestRunner.assertListEquals(expected, actual)
+    jenkinsUnit.assertListEquals(expected, actual)
     cleanUp(path)
 }
 
-jenkinsTestRunner.test("should return empty list for missing directory"){
+jenkinsUnit.test("should return empty list for missing directory"){
     def path = UUID.randomUUID().toString()
     def actual = filesystem.listing(path)
-    jenkinsTestRunner.assertListEquals([], actual)
+    jenkinsUnit.assertListEquals([], actual)
 }
 
-jenkinsTestRunner.test("should find directory"){
+jenkinsUnit.test("should find directory"){
     def path = createDirectoryWithRandomContent()
     def actual = filesystem.isDirectory(path)
-    jenkinsTestRunner.assertTrue(actual)
+    jenkinsUnit.assertTrue(actual)
     cleanUp(path)
 }
 
-jenkinsTestRunner.test("should find file"){
+jenkinsUnit.test("should find file"){
     def path = createFileWithRandomContent()
     def actual = filesystem.isDirectory(path)
-    jenkinsTestRunner.assertFalse(actual)
+    jenkinsUnit.assertFalse(actual)
     cleanUp(path)
 }
 
