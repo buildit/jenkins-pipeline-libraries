@@ -46,6 +46,7 @@ class ConvoxTest {
 
         convox.deploy(appName, description)
 
+        assertThat(shellCommands.size(), equalTo(1))
         assertThat(shellCommands[0], startsWith("convox deploy"))
     }
 
@@ -66,6 +67,35 @@ class ConvoxTest {
 
         convox.waitUntilDeployed("test-app")
 
+        assertThat(errors.size(), equalTo(1))
+        assertThat(errors[0], not(empty()))
+    }
+
+    @Test
+    void shouldSetSecurityGroupSet() {
+        shell.metaClass.pipe = { String s -> return "" }
+
+        convox.ensureSecurityGroupSet("test-app", "sg-12345")
+
+        assertThat(shellCommands.size(), equalTo(1))
+        assertThat(shellCommands[0], startsWith("convox params set"))
+    }
+
+    @Test
+    void shouldEnsureSecurityGroupSet() {
+        shell.metaClass.pipe = { String s -> return "sg-12345" }
+
+        convox.ensureSecurityGroupSet("test-app", "sg-12345")
+
+        assertThat(shellCommands.size(), equalTo(0))
+    }
+
+    @Test
+    void shouldEnsureSecurityGroupFormat() {
+
+        convox.ensureSecurityGroupSet("test-app", "fake-security-group")
+
+        assertThat(shellCommands.size(), equalTo(0))
         assertThat(errors.size(), equalTo(1))
         assertThat(errors[0], not(empty()))
     }

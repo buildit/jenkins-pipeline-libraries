@@ -18,4 +18,18 @@ def waitUntilDeployed(appName) {
     error "Application failed to start running within 5 minutes"
 }
 
+def ensureSecurityGroupSet(appName, securityGroup) {
+
+    if (!securityGroup.startsWith('sg-')) {
+        error "Ensure you use the AWS Group ID for the security group"
+        return
+    }
+
+    def groupId = shell.pipe("convox apps info --app ${appName} | grep SecurityGroup | sed 's/SecurityGroup *\\(.*\\)/\\1/'").trim()
+
+    if (groupId != securityGroup) {
+        sh "convox params set SecurityGroup=${securityGroup} --app ${appName}"
+    }
+}
+
 return this
