@@ -78,7 +78,7 @@ class ConvoxTest {
         convox.ensureSecurityGroupSet("test-app", "sg-12345")
 
         assertThat(shellCommands.size(), equalTo(1))
-        assertThat(shellCommands[0], startsWith("convox params set"))
+        assertThat(shellCommands[0], startsWith("convox apps params set"))
     }
 
     @Test
