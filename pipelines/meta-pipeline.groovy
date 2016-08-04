@@ -3,8 +3,6 @@ node() {
     pom = load "lib/pom.groovy"
     git = load "lib/git.groovy"
     jenkinsUnitRunner = load "src/it/jenkinsUnit/runner.groovy"
-
-    nexusHost = "http://nexus.riglet:9000/nexus"
 }
 
 stage 'create package'
@@ -26,9 +24,9 @@ node() {
 
 stage 'promote package'
 node() {
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "nexus-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "bintray-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
        def credentials = "'${env.USERNAME}':'${env.PASSWORD}'"
-       sh("curl -v -u ${credentials} --upload-file target/*.zip \"${nexusHost}/content/repositories/staging/zips/jenkins-pipeline-libraries/\"")
+       sh("curl -u ${credentials} -T target/*.zip \"https://api.bintray.com/content/buildit/maven/jenkins-pipeline-libraries/${pomVersion}/jenkins-pipeline-libraries-${pomVersion}.zip?publish=1\"")
     }
 }
 
