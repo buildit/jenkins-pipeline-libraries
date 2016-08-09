@@ -25,7 +25,7 @@ def ensureSecurityGroupSet(appName, securityGroup) {
         return
     }
 
-    def groupId = shell.pipe("convox apps info --app ${appName} | grep SecurityGroup | sed 's/SecurityGroup *\\(.*\\)/\\1/'").trim()
+    def groupId = shell.pipe("convox apps params --app ${appName} | grep SecurityGroup | sed 's/SecurityGroup *\\(.*\\)/\\1/'").trim()
 
     if (groupId != securityGroup) {
         sh "convox apps params set SecurityGroup=${securityGroup} --app ${appName}"
