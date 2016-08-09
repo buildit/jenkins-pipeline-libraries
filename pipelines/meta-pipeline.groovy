@@ -55,13 +55,18 @@ try {
 }
 catch (err) {
     currentBuild.result = "FAILURE"
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-        // delete the tag off origin
-        sh("git push origin :refs/tags/${pomVersion}")
-        sh("git fetch --tags --prune")
+    node() {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            // delete the tag off origin
+            sh("git push origin :refs/tags/${pomVersion}")
+            sh("git fetch --tags --prune")
+        }
     }
     throw err
 }
 finally {
-    sh("git remote set-url origin ${repositoryUrl} &> /dev/null")
+    stage 'cleanup'
+    node() {
+        sh("git remote set-url origin ${repositoryUrl} &> /dev/null")
+    }
 }
