@@ -7,7 +7,7 @@ node() {
 
 stage 'create package'
 node() {
-    def pomVersion = pom.version(pwd() + "/pom.xml")
+    pomVersion = pom.version(pwd() + "/pom.xml")
     def commitId = shell.pipe("git rev-parse HEAD")
 
     sh("mvn clean package")
