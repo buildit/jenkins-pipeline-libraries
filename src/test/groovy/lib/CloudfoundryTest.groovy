@@ -1,17 +1,13 @@
 package lib
 
-import org.codehaus.groovy.control.CompilerConfiguration
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
-import stubs.WorkflowStub
 import utilities.ScriptLoader
 
-import static org.hamcrest.core.StringContains.containsString
+import static org.hamcrest.core.IsCollectionContaining.hasItem
 import static org.hamcrest.core.IsEqual.equalTo
 import static org.hamcrest.core.IsNot.not
-import static org.hamcrest.core.IsCollectionContaining.hasItem
+import static org.hamcrest.core.StringContains.containsString
 import static org.junit.Assert.assertThat
 import static utilities.ReadFromResources.readFromResources
 
