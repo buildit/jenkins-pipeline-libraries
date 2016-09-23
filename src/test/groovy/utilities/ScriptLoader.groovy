@@ -2,6 +2,7 @@ package utilities
 
 import stubs.WorkflowStub
 import org.codehaus.groovy.control.CompilerConfiguration
+import NonCPS;
 
 class ScriptLoader {
     public static load(String script){
