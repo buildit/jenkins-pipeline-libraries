@@ -17,7 +17,7 @@ def parseResponse(result) {
 }
 
 def imageTags(repository, region='us-west-2'){
-    def result = shell.pipe("aws ecr list-images --repository-name ${repository} --region=${region}")
+    def result = shell.pipe("aws ecr list-images --repository-name ${repository} --region=${region} --filter tagStatus=TAGGED --no-paginate")
     return parseResponse(result);
 }
 
