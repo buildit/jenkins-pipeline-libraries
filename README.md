@@ -1,5 +1,5 @@
 # Jenkins Pipeline Libraries
-[![Build Status](https://travis-ci.org/electroma/jenkins-pipeline-libraries.svg?branch=master)](https://travis-ci.org/buildit/jenkins-pipeline-libraries) 
+[![Build Status](https://travis-ci.org/electroma/jenkins-pipeline-libraries.svg?branch=master)](https://travis-ci.org/electroma/jenkins-pipeline-libraries) 
 
 Useful Jenkins Pipeline Libraries to use for whatever.
 
