@@ -1,15 +1,11 @@
 package lib;
 
 import hudson.FilePath;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-import org.jaxen.util.SingletonList;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.libs.GlobalLibraries;
 import org.jenkinsci.plugins.workflow.libs.LibraryConfiguration;
-import org.jenkinsci.plugins.workflow.libs.LibraryRetriever;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -20,9 +16,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.LoggerRule;
 import org.jvnet.hudson.test.RestartableJenkinsRule;
 
-import javax.annotation.Nonnull;
 import java.io.File;
-import java.util.Collections;
 import java.util.logging.Level;
 
 import static java.util.Collections.singletonList;
@@ -56,10 +50,11 @@ public class PipelineTest {
                         "def ann = ''\n" +
                         "node() {\n" +
                         "   new slack().notify('Test message', 'Sample Slack notification', 'good', 'http://i296.photobucket.com/albums/mm200/kingzain/the_eye_of_sauron_by_stirzocular-d86f0oo_zpslnqbwhv2.png', '@rsafronov')\n" +
+                        "   echo 'YES!'\n" +
                         "}", true));
         WorkflowRun b = p.scheduleBuild2(0).waitForStart();
         assertNotNull(b);
         r.assertBuildStatusSuccess(r.waitForCompletion(b));
-        //r.assertLogContains("YES!", b);
+        r.assertLogContains("YES!", b);
     }
 }

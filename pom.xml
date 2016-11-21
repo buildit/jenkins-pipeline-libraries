@@ -9,13 +9,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jenkins.version>2.32</jenkins.version>
+        <groovy.version>2.4.7</groovy.version>
     </properties>
-
-    <parent>
-        <groupId>org.jenkins-ci.plugins</groupId>
-        <artifactId>plugin</artifactId>
-        <version>2.19</version>
-    </parent>
 
     <repositories>
         <repository>
@@ -67,6 +62,8 @@
             <version>2.5</version>
             <scope>test</scope>
         </dependency>
+
+        <!--Integation test dependencies-->
         <dependency>
             <groupId>com.cloudbees</groupId>
             <artifactId>groovy-cps</artifactId>
@@ -76,8 +73,27 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>2.4.7</version>
+            <version>${groovy.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.main</groupId>
+            <artifactId>jenkins-test-harness</artifactId>
+            <version>2.17</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit-dep</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.main</groupId>
+            <artifactId>jenkins-war</artifactId>
+            <classifier>war-for-test</classifier>
+            <version>${jenkins.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
