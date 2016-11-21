@@ -18,7 +18,7 @@ def isDirectory(dir) {
     contents.length() > 0
 }
 
-public static String getFileName(String filename) {
+static String getFileName(String filename) {
     if (filename == null) {
         return null;
     } else {
@@ -27,11 +27,11 @@ public static String getFileName(String filename) {
     }
 }
 
-public static String getFileBaseName(String filename) {
+static String getFileBaseName(String filename) {
     return removeFileExtension(getFileName(filename));
 }
 
-public static String removeFileExtension(String filename) {
+static String removeFileExtension(String filename) {
     if (filename == null) {
         return null;
     } else {

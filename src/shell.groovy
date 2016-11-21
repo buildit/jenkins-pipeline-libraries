@@ -1,9 +1,5 @@
 def pipe(command){
-    String fileName = UUID.randomUUID().toString() + ".tmp"
-    sh("${command} | tee ${fileName}")
-    def contents = readFile("${fileName}")
-    sh("rm ${fileName}")
-    return contents
+    sh(script: command, returnStdout: true)
 }
 
 return this
