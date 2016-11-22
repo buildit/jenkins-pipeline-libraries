@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
+    <id>jenkins-zip</id>
     <formats>
         <format>zip</format>
     </formats>
     <baseDirectory>/</baseDirectory>
     <fileSets>
         <fileSet>
-            <outputDirectory>lib</outputDirectory>
+            <outputDirectory>src</outputDirectory>
             <directory>lib</directory>
         </fileSet>
         <fileSet>
