@@ -2,13 +2,10 @@ package lib
 
 import org.junit.Before
 import org.junit.Test
-
 import utilities.ScriptLoader
 
+import static org.hamcrest.CoreMatchers.*
 import static org.hamcrest.Matchers.empty
-import static org.hamcrest.CoreMatchers.equalTo
-import static org.hamcrest.CoreMatchers.not
-import static org.hamcrest.CoreMatchers.startsWith
 import static org.junit.Assert.assertThat
 
 class ConvoxTest {
@@ -23,7 +20,7 @@ class ConvoxTest {
     void setUp() {
         convox = ScriptLoader.load("convox")
         shell = [:]
-        convox.metaClass.getShell = {shell}
+        convox.metaClass.getShell = { shell }
         convox.metaClass.error = { String error -> errors.add(error) }
         convox.metaClass.sleep = { int time -> timeSlept += time }
         convox.metaClass.sh = { String s -> shellCommands.add(s) }

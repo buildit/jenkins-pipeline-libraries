@@ -62,7 +62,7 @@ class WorkflowStub extends Script {
         return new WorkflowStub()
     }
 
-    def echo(String arg){
+    def echo(String arg) {
         println(arg)
     }
 
@@ -85,7 +85,7 @@ class WorkflowStub extends Script {
         closure()
     }
 
-    def wrap(Map args, closure){
+    def wrap(Map args, closure) {
         closure()
     }
 

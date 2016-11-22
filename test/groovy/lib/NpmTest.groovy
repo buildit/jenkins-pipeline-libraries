@@ -2,7 +2,6 @@ package lib
 
 import org.junit.Before
 import org.junit.Test
-
 import utilities.ScriptLoader
 
 import static org.hamcrest.CoreMatchers.equalTo
@@ -18,7 +17,7 @@ class NpmTest {
     void setUp() {
         npm = ScriptLoader.load("npm")
         shell = [:]
-        npm.metaClass.getShell = {shell}
+        npm.metaClass.getShell = { shell }
     }
 
     @Test

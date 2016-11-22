@@ -1,6 +1,6 @@
 package jenkinsUnit
 
-def test(name, closure){
+def test(name, closure) {
     ws {
         echo("*********************************************************************************************************")
         echo("Running Test: \"${name}\"")
@@ -10,46 +10,46 @@ def test(name, closure){
     }
 }
 
-def assertEquals(expected, actual, message = ""){
-    if(!expected.equals(actual)){
-        if(message){
+def assertEquals(expected, actual, message = "") {
+    if (!expected.equals(actual)) {
+        if (message) {
             error(message.toString())
         }
         error("${actual} is not equal to ${expected}")
     }
 }
 
-def assertListEquals(expected, actual, message = ""){
+def assertListEquals(expected, actual, message = "") {
     def difference = difference(expected, actual)
-    if(difference.size() != 0){
-        if(message){
+    if (difference.size() != 0) {
+        if (message) {
             error(message.toString())
         }
         error("Expected: ${expected}, Actual: ${actual}, Difference: ${difference}")
     }
 }
 
-def assertTrue(actual, message = ""){
-    if(!actual){
-        if(message){
+def assertTrue(actual, message = "") {
+    if (!actual) {
+        if (message) {
             error(message.toString())
         }
         error("Result is false - expected true")
     }
 }
 
-def assertFalse(actual, message = ""){
-    if(actual){
-        if(message){
+def assertFalse(actual, message = "") {
+    if (actual) {
+        if (message) {
             error(message.toString())
         }
         error("Result is true - expected false")
     }
 }
 
-def assertNotEquals(unexpected, actual, message = ""){
-    if(unexpected.equals(actual)){
-        if(message){
+def assertNotEquals(unexpected, actual, message = "") {
+    if (unexpected.equals(actual)) {
+        if (message) {
             error(message.toString())
         }
         error("${actual} is equal to ${unexpected}")

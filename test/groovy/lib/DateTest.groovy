@@ -2,7 +2,6 @@ package lib
 
 import org.junit.Before
 import org.junit.Test
-
 import utilities.ScriptLoader
 
 import static org.hamcrest.CoreMatchers.equalTo

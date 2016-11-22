@@ -1,14 +1,12 @@
 package lib
 
-import utilities.ScriptLoader
-
-import static org.junit.Assert.assertThat
-import static org.junit.Assert.assertEquals
-import static org.hamcrest.core.IsCollectionContaining.hasItem
-
 import org.junit.Before
 import org.junit.Test
+import utilities.ScriptLoader
 
+import static org.hamcrest.core.IsCollectionContaining.hasItem
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertThat
 
 class JenkinsTest {
 

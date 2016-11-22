@@ -39,7 +39,7 @@ class UiTest {
         def input = []
         ui.metaClass.input = { args -> input = args }
 
-        ui.selectTag([1,2,3])
+        ui.selectTag([1, 2, 3])
 
         assertThat(input.message, equalTo("Select tag"))
     }
