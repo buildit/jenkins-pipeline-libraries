@@ -1,4 +1,4 @@
-package lib
+package jenkinsUnit.test
 
 jenkinsUnit = load "src/it/jenkinsUnit/jenkinsUnit.groovy"
 
