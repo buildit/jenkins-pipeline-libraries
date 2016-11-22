@@ -1,7 +1,9 @@
-shell = load "lib/shell.groovy"
+def getShell() {
+    new shell()
+}
 
 def hostIp(container) {
-    shell.pipe(/docker inspect --format='{{.NetworkSettings.IPAddress}}' / + container.id).trim()
+    getShell().pipe(/docker inspect --format='{{.NetworkSettings.IPAddress}}' / + container.id).trim()
 }
 
 return this

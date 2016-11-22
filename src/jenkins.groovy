@@ -1,22 +1,21 @@
-import groovy.json.JsonSlurper
+def getTemplate() { new template() }
 
-shell = load "lib/shell.groovy"
-template = load "lib/template.groovy"
-filesystem = load "lib/filesystem.groovy"
-templateFiles = [polling: readFile("templates/app-polling-pipeline.xml"), manual: readFile("templates/app-manual-pipeline.xml")]
+def getFilesystem() { new filesystem() }
 
-def createPipelineJob(jobName, gitUrl, branch, pipelinePath, shouldPoll, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll){
+def getTemplateFiles() {[polling: readFile("templates/app-polling-pipeline.xml"), manual: readFile("templates/app-manual-pipeline.xml")]}
+
+def createPipelineJob(jobName, gitUrl, branch, pipelinePath, shouldPoll, jenkinsUrl, jenkinsCredentials, jenkinsScmPoll) {
     def tmpFile = UUID.randomUUID().toString() + ".xml"
-    def templateFile = shouldPoll ? templateFiles["polling"] : templateFiles["manual"]
-    def jobXML = template.transform(
-        templateFile,
-        [
-            git_url: gitUrl,
-            branch: branch,
-            pipeline_script_path: pipelinePath,
-            jenkins_credentials: jenkinsCredentials,
-            jenkins_scm_poll: jenkinsScmPoll
-        ]
+    def templateFile = shouldPoll ? getTemplateFiles()["polling"] : getTemplateFiles()["manual"]
+    def jobXML = getTemplate().transform(
+            templateFile,
+            [
+                    git_url             : gitUrl,
+                    branch              : branch,
+                    pipeline_script_path: pipelinePath,
+                    jenkins_credentials : jenkinsCredentials,
+                    jenkins_scm_poll    : jenkinsScmPoll
+            ]
     )
     writeFile(file: tmpFile, text: jobXML)
 
@@ -26,13 +25,13 @@ def createPipelineJob(jobName, gitUrl, branch, pipelinePath, shouldPoll, jenkins
     sh("rm ${tmpFile}")
 }
 
-def createFreestyleJobs(gitUrl, jenkinsUrl){
+def createFreestyleJobs(gitUrl, jenkinsUrl) {
 
     git(url: gitUrl)
 
     def jenkinsJobsPath = "./jenkinsJobs"
-    def listing = filesystem.listing(jenkinsJobsPath)
-    for (def i=0; i < listing.size(); i++) {
+    def listing = getFilesystem().listing(jenkinsJobsPath)
+    for (def i = 0; i < listing.size(); i++) {
         def filepath = listing[i]
         if (filepath != jenkinsJobsPath) {
             def jobName = new File(filepath).getName().split("\\.")[0]
