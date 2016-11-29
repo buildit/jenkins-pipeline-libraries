@@ -49,7 +49,7 @@ public class PipelineTest {
                 "@Library('buildit@local')\n" +
                         "def ann = ''\n" +
                         "node() {\n" +
-                        "   new slack().notify('Test message', 'Sample Slack notification', 'good', 'http://i296.photobucket.com/albums/mm200/kingzain/the_eye_of_sauron_by_stirzocular-d86f0oo_zpslnqbwhv2.png', '@rsafronov')\n" +
+                        "   echo new template().transform('AAA BBB', [:])\n" +
                         "   echo 'YES!'\n" +
                         "}", true));
         WorkflowRun b = p.scheduleBuild2(0).waitForStart();
