@@ -23,9 +23,9 @@ def notify(title, text, color, icon, channel) {
             ]
         ]]
     ]
+    def encodedReq = URLEncoder.encode(JsonOutput.toJson(payloadJson), "UTF-8")
     sh("curl -X POST " +
-            "--data-urlencode \'payload=${JsonOutput.toJson(payloadJson)}\'" +
-            " ${slackURL}")
+            "--data \'payload=${encodedReq}\' ${slackURL}")
 }
 
 return this
