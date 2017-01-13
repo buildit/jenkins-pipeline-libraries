@@ -4,10 +4,11 @@ try {
 
     stage('load libraries') {
         node() {
-            shell = load "lib/shell.groovy"
-            pom = load "lib/pom.groovy"
-            git = load "lib/git.groovy"
-            jenkinsUnitRunner = load "src/it/jenkinsUnit/runner.groovy"
+
+            shell = load "src/shell.groovy"
+            pom = load "src/pom.groovy"
+            git = load "src/git.groovy"
+            jenkinsUnitRunner = load "test/groovy/jenkinsUnit/runner.groovy"
 
             repositoryUrl = shell.pipe("git config --get remote.origin.url")
             pomVersion = pom.version(pwd() + "/pom.xml")
