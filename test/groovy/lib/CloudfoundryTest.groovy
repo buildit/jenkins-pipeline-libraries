@@ -37,12 +37,13 @@ class CloudfoundryTest {
         cloudfoundry.metaClass.getShell = { shell }
         cloudfoundry.metaClass.error = { String s -> errors.add(s) }
         cloudfoundry.metaClass.sh = { String s -> shellCommands.add(s) }
+        shell.pipe = { String s ->
+            return readFromCfApiResources(s)
+        }
     }
 
     @Test
     void shouldDeployToCloudFoundry() {
-        cloudfoundry.metaClass.authenticate = { cfApiEndpoint, credentialsId, cfOrg, cfSpace, closure -> closure() }
-
         cloudfoundry.push(appName, hostName, appLocation, uniqueVersion, cfSpace, cfOrg, cfApiEndpoint, credentialsId)
 
         assertThat(shellCommands, hasItem("cf push ${appName} -p ${appLocation} -n ${hostName} --no-start" as String));
@@ -52,54 +53,36 @@ class CloudfoundryTest {
 
     @Test
     void shouldReturnOrganizations() {
-        shell.pipe = { String s ->
-            return readFromCfApiResources(s)
-        }
         def result = cloudfoundry.getOrganizations("https://api.run.pivotal.io", credentialsId)
         assertThat(result.resources[0].entity.name as String, equalTo("big-red-fun-bus"))
     }
 
     @Test
     void shouldReturnDigitalPlatformOrganization() {
-        shell.pipe = { String s ->
-            return readFromCfApiResources(s)
-        }
         def result = cloudfoundry.getOrganization("big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(result.entity.name as String, equalTo("big-red-fun-bus"))
     }
 
     @Test
     void shouldReturnDevelopmentSpace() {
-        shell.pipe = { String s ->
-            return readFromCfApiResources(s)
-        }
         def result = cloudfoundry.getSpace("development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(result.entity.name as String, equalTo("development"))
     }
 
     @Test
     void shouldReturnDomain() {
-        shell.pipe = { s ->
-            return readFromCfApiResources(s as String)
-        }
         def result = cloudfoundry.getDomains("development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(result.resources[0].entity.name as String, equalTo("cfapps.io"))
     }
 
     @Test
     void shouldReturnActiveAppName() {
-        shell.pipe = { String s ->
-            return readFromCfApiResources(s)
-        }
         def result = cloudfoundry.getActiveAppNameForRoute("hello-boot-v1", "https://api.run.pivotal.io", credentialsId)
         assertThat(result as String, equalTo("hello-boot-1-0-4"))
     }
 
     @Test
     void shouldNotMapRouteWhenRouteAlreadyExistsOnSameApplication() {
-        shell.pipe = { String s ->
-            return readFromCfApiResources(s)
-        }
         cloudfoundry.mapRoute("hello-boot-1-0-4", "hello-boot-v1", "development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         println shellCommands
         assertThat(shellCommands, not(hasItem(containsString("map-route"))))
@@ -107,12 +90,30 @@ class CloudfoundryTest {
 
     @Test
     void shouldMapRouteAndDeletePreviousVersion() {
-        shell.pipe = { String s ->
-            return readFromCfApiResources(s)
-        }
         cloudfoundry.mapRoute("hello-boot-1-0-5", "hello-boot-v1", "development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(shellCommands, hasItem(containsString("map-route hello-boot-1-0-5")))
         assertThat(shellCommands, hasItem(containsString("unmap-route hello-boot-1-0-4")))
+    }
+
+    @Test
+    void shouldAuthenticateCorrectlyWhenDeployingApplications() {
+        assertAuthenticationCall()
+        cloudfoundry.push(appName, hostName, appLocation, uniqueVersion, cfSpace, cfOrg, cfApiEndpoint, credentialsId)
+    }
+
+    @Test
+    void shouldAuthenticateCorrectlyWhenMappingRoutes() {
+        assertAuthenticationCall()
+        cloudfoundry.mapRoute("hello-boot-1-0-5", "hello-boot-v1", cfSpace, cfOrg, cfApiEndpoint, credentialsId)
+    }
+
+    private void assertAuthenticationCall(){
+        cloudfoundry.metaClass.authenticate = { String cfApiEndpoint, String credentialsId, String cfOrg, String cfSpace, closure ->
+            assertThat(cfApiEndpoint as String, equalTo(this.cfApiEndpoint))
+            assertThat(credentialsId as String, equalTo(this.credentialsId))
+            assertThat(cfOrg as String, equalTo(this.cfOrg))
+            assertThat(cfSpace as String, equalTo(this.cfSpace))
+        }
     }
 
     private String readFromCfApiResources(String s) {

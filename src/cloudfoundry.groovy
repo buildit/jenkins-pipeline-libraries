@@ -5,7 +5,7 @@ def getShell() {
 }
 
 def push(appName, hostName, appLocation, version, cfSpace, cfOrg, cfApiEndpoint, credentialsId) {
-    authenticate(cfApiEndpoint, cfOrg, cfSpace, credentialsId) {
+    authenticate(cfApiEndpoint, credentialsId, cfOrg, cfSpace) {
         sh "cf push ${appName} -p ${appLocation} -n ${hostName} --no-start"
         sh "cf set-env ${appName} VERSION ${version}"
         sh "cf start ${appName}"
@@ -35,14 +35,14 @@ def mapRoute(appName, host, cfSpace, cfOrg, cfApiEndpoint, credentialsId) {
     }
     def domains = getDomains(cfSpace, cfOrg, cfApiEndpoint, credentialsId)
     for(int i = 0; i < (domains.resources.size() as Integer); i++){
-        authenticate(cfApiEndpoint, cfOrg, cfSpace, credentialsId) {
+        authenticate(cfApiEndpoint, credentialsId, cfOrg, cfSpace) {
             sh("cf map-route ${appName} ${domains.resources[i].entity.name} -n ${host}")
         }
     }
     if(activeAppName){
         input message: "Do you want to remove ${host} mapping from ${activeAppName}"
         for(int i = 0; i < (domains.resources.size() as Integer); i++){
-            authenticate(cfApiEndpoint, cfOrg, cfSpace, credentialsId) {
+            authenticate(cfApiEndpoint, credentialsId, cfOrg, cfSpace) {
                 sh("cf unmap-route ${activeAppName} ${domains.resources[i].entity.name} -n ${host}")
             }
         }
