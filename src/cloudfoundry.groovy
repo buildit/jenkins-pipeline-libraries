@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic
 
 def getShell() {
     new shell()
@@ -70,7 +70,7 @@ def getDomains(cfSpace, cfOrg, cfApiEndpoint, credentialsId) {
 def parseJson(url, cfApiEndpoint, credentialsId) {
     authenticate(cfApiEndpoint, credentialsId) {
         def contents = getShell().pipe("cf curl \"${url}\"") as String
-        new JsonSlurper().parseText(contents)
+        new JsonSlurperClassic().parseText(contents)
     }
 }
 
