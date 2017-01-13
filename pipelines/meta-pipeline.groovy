@@ -26,7 +26,7 @@ try {
             sh("mvn clean package")
             //jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def authenticatedUrl = gitUtil.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
                 echo("setting remote to authenticated url : ${authenticatedUrl}")
                 sh("git remote set-url origin ${authenticatedUrl} &> /dev/null")
@@ -55,7 +55,7 @@ try {
                 newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
             }
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh("mvn versions:set -DnewVersion=${newVersion} versions:commit")
                 sh("git add pom.xml")
                 sh("git commit -m'Bumping version to ${newVersion}'")
@@ -69,7 +69,7 @@ catch (err) {
     currentBuild.result = "FAILURE"
     node() {
         if(!pomVersion.equals("")){
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 // delete the tag off origin
                 sh("git push origin :refs/tags/${pomVersion}")
                 sh("git fetch --tags --prune")
