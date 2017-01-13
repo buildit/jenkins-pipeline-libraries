@@ -28,6 +28,7 @@ try {
 
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def authenticatedUrl = gitUtil.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
+                echo("setting remote to authenticated url : ${authenticatedUrl}")
                 sh("git remote set-url origin ${authenticatedUrl} &> /dev/null")
                 sh("git tag -af ${pomVersion} -m \"Built version: ${pomVersion}\" ${commitId}")
                 sh("git push --tags")
