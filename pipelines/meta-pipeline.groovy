@@ -20,7 +20,7 @@ try {
             def commitId = shell.pipe("git rev-parse HEAD")
 
             sh("mvn clean package")
-            jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
+            //jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
 
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def authenticatedUrl = git.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
