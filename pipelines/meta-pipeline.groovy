@@ -59,12 +59,15 @@ try {
     }
 }
 catch (err) {
+    echo(err.toString())
     currentBuild.result = "FAILURE"
     node() {
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            // delete the tag off origin
-            sh("git push origin :refs/tags/${pomVersion}")
-            sh("git fetch --tags --prune")
+        if(!pomVersion.equals("")){
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                // delete the tag off origin
+                sh("git push origin :refs/tags/${pomVersion}")
+                sh("git fetch --tags --prune")
+            }
         }
     }
     throw err
