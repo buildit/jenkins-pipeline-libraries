@@ -1,4 +1,7 @@
+@Library('buildit')
+
 pomVersion = ""
+
 try {
     currentBuild.result = "SUCCESS"
 
