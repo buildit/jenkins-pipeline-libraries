@@ -1,9 +1,5 @@
 @Library('buildit')
 
-shell = new shell()
-pom = new pom()
-git = new git()
-
 pomVersion = ""
 
 try {
@@ -12,22 +8,26 @@ try {
     stage('load libraries') {
         node() {
 
+            shellUtil = new shell()
+            pomUtil = new pom()
+            gitUtil = new git()
+
             jenkinsUnitRunner = load "test/groovy/jenkinsUnit/runner.groovy"
 
-            repositoryUrl = shell.pipe("git config --get remote.origin.url")
-            pomVersion = pom.version(pwd() + "/pom.xml")
+            repositoryUrl = shellUtil.pipe("git config --get remote.origin.url")
+            pomVersion = pomUtil.version(pwd() + "/pom.xml")
         }
     }
 
     stage('create package') {
         node() {
-            def commitId = shell.pipe("git rev-parse HEAD")
+            def commitId = shellUtil.pipe("git rev-parse HEAD")
 
             sh("mvn clean package")
             //jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
 
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "git-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                def authenticatedUrl = git.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
+                def authenticatedUrl = gitUtil.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
                 sh("git remote set-url origin ${authenticatedUrl} &> /dev/null")
                 sh("git tag -a ${pomVersion} -m \"Built version: ${pomVersion}\" ${commitId}")
                 sh("git push --tags")
@@ -46,9 +46,9 @@ try {
 
     stage('increment version') {
         node() {
-            def majorVersion = pom.majorVersion(pwd() + "/pom.xml")
-            def minorVersion = pom.minorVersion(pwd() + "/pom.xml").toInteger()
-            def patchVersion = pom.patchVersion(pwd() + "/pom.xml").toInteger()
+            def majorVersion = pomUtil.majorVersion(pwd() + "/pom.xml")
+            def minorVersion = pomUtil.minorVersion(pwd() + "/pom.xml").toInteger()
+            def patchVersion = pomUtil.patchVersion(pwd() + "/pom.xml").toInteger()
             def newVersion = "${majorVersion}.${minorVersion + 1}.0"
             if (patchVersion > 0) {
                 newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
