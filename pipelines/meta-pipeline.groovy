@@ -38,7 +38,7 @@ try {
 
     stage('promote package') {
         node() {
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "bintray-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: repositoryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def credentials = "'${env.USERNAME}':'${env.PASSWORD}'"
                 sh("curl -u ${credentials} -T target/*.zip \"https://api.bintray.com/content/buildit/maven/jenkins-pipeline-libraries/${pomVersion}/jenkins-pipeline-libraries-${pomVersion}.zip?publish=1\"")
             }
