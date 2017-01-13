@@ -25,6 +25,7 @@ class CloudfoundryTest {
     def uniqueVersion = "1.0.1.20160208100933"
     def cfOrg = "big-red-fun-bus"
     def cfApiEndpoint = "https://api.run.pivotal.io"
+    def credentialsId = "credentials"
 
     @Before
     void setUp() {
@@ -40,9 +41,9 @@ class CloudfoundryTest {
 
     @Test
     void shouldDeployToCloudFoundry() {
-        cloudfoundry.metaClass.authenticate = { cfApiEndpoint, cfOrg, cfSpace, closure -> closure() }
+        cloudfoundry.metaClass.authenticate = { cfApiEndpoint, credentialsId, cfOrg, cfSpace, closure -> closure() }
 
-        cloudfoundry.push(appName, hostName, appLocation, uniqueVersion, cfSpace, cfOrg, cfApiEndpoint)
+        cloudfoundry.push(appName, hostName, appLocation, uniqueVersion, cfSpace, cfOrg, cfApiEndpoint, credentialsId)
 
         assertThat(shellCommands, hasItem("cf push ${appName} -p ${appLocation} -n ${hostName} --no-start" as String));
         assertThat(shellCommands, hasItem("cf set-env ${appName} VERSION ${uniqueVersion}" as String))
@@ -54,7 +55,7 @@ class CloudfoundryTest {
         shell.pipe = { String s ->
             return readFromCfApiResources(s)
         }
-        def result = cloudfoundry.getOrganizations("https://api.run.pivotal.io")
+        def result = cloudfoundry.getOrganizations("https://api.run.pivotal.io", credentialsId)
         assertThat(result.resources[0].entity.name as String, equalTo("big-red-fun-bus"))
     }
 
@@ -63,7 +64,7 @@ class CloudfoundryTest {
         shell.pipe = { String s ->
             return readFromCfApiResources(s)
         }
-        def result = cloudfoundry.getOrganization("big-red-fun-bus", "https://api.run.pivotal.io")
+        def result = cloudfoundry.getOrganization("big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(result.entity.name as String, equalTo("big-red-fun-bus"))
     }
 
@@ -72,7 +73,7 @@ class CloudfoundryTest {
         shell.pipe = { String s ->
             return readFromCfApiResources(s)
         }
-        def result = cloudfoundry.getSpace("development", "big-red-fun-bus", "https://api.run.pivotal.io")
+        def result = cloudfoundry.getSpace("development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(result.entity.name as String, equalTo("development"))
     }
 
@@ -81,7 +82,7 @@ class CloudfoundryTest {
         shell.pipe = { s ->
             return readFromCfApiResources(s as String)
         }
-        def result = cloudfoundry.getDomains("development", "big-red-fun-bus", "https://api.run.pivotal.io")
+        def result = cloudfoundry.getDomains("development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(result.resources[0].entity.name as String, equalTo("cfapps.io"))
     }
 
@@ -90,7 +91,7 @@ class CloudfoundryTest {
         shell.pipe = { String s ->
             return readFromCfApiResources(s)
         }
-        def result = cloudfoundry.getActiveAppNameForRoute("hello-boot-v1", "https://api.run.pivotal.io")
+        def result = cloudfoundry.getActiveAppNameForRoute("hello-boot-v1", "https://api.run.pivotal.io", credentialsId)
         assertThat(result as String, equalTo("hello-boot-1-0-4"))
     }
 
@@ -99,7 +100,7 @@ class CloudfoundryTest {
         shell.pipe = { String s ->
             return readFromCfApiResources(s)
         }
-        cloudfoundry.mapRoute("hello-boot-1-0-4", "hello-boot-v1", "development", "big-red-fun-bus", "https://api.run.pivotal.io")
+        cloudfoundry.mapRoute("hello-boot-1-0-4", "hello-boot-v1", "development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         println shellCommands
         assertThat(shellCommands, not(hasItem(containsString("map-route"))))
     }
@@ -109,7 +110,7 @@ class CloudfoundryTest {
         shell.pipe = { String s ->
             return readFromCfApiResources(s)
         }
-        cloudfoundry.mapRoute("hello-boot-1-0-5", "hello-boot-v1", "development", "big-red-fun-bus", "https://api.run.pivotal.io")
+        cloudfoundry.mapRoute("hello-boot-1-0-5", "hello-boot-v1", "development", "big-red-fun-bus", "https://api.run.pivotal.io", credentialsId)
         assertThat(shellCommands, hasItem(containsString("map-route hello-boot-1-0-5")))
         assertThat(shellCommands, hasItem(containsString("unmap-route hello-boot-1-0-4")))
     }
