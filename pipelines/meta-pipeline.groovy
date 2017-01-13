@@ -5,9 +5,9 @@ try {
     stage('load libraries') {
         node() {
 
-            shell = load "src/shell.groovy"
-            pom = load "src/pom.groovy"
-            git = load "src/git.groovy"
+            shell = new shell()
+            pom = new pom()
+            git = new git()
             jenkinsUnitRunner = load "test/groovy/jenkinsUnit/runner.groovy"
 
             repositoryUrl = shell.pipe("git config --get remote.origin.url")
