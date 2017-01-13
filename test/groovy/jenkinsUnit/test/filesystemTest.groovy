@@ -1,8 +1,8 @@
 package jenkinsUnit.test
 
-jenkinsUnit = load "src/it/jenkinsUnit/jenkinsUnit.groovy"
+jenkinsUnit = load "test/groovy/jenkinsUnit/jenkinsUnit.groovy"
 
-filesystem = load "lib/filesystem.groovy"
+filesystem = load "src/filesystem.groovy"
 
 jenkinsUnit.test("should calculate same checksum for different folders with same content") {
     def src = createDirectoryWithRandomContent()
