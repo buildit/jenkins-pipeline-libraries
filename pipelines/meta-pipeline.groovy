@@ -1,3 +1,4 @@
+pomVersion = ""
 try {
     currentBuild.result = "SUCCESS"
 
