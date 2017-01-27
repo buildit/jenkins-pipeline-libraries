@@ -39,6 +39,11 @@ def listBranches(repositoryUrl, branch, credentialsId){
     }
 }
 
+def configureIdentity(String gitUsername, String gitEmail){
+    sh("git config user.name ${gitUsername}")
+    sh("git config user.email ${gitEmail}")
+}
+
 def getShortCommit(commit = "HEAD") {
     return getShell().pipe("git rev-parse ${commit}").substring(0,6)
 }

@@ -5,6 +5,7 @@ import org.junit.Test
 import utilities.ScriptLoader
 
 import static org.hamcrest.CoreMatchers.equalTo
+import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.core.StringContains.containsString
 import static org.hamcrest.core.StringStartsWith.startsWith
 import static org.junit.Assert.assertThat
@@ -153,4 +154,16 @@ class GitTest {
         assertThat(pipeCommands[0], startsWith("git log"))
         assertThat(commitMsg, equalTo("Last message"))
     }
+
+    @Test
+    void shouldConfigureCorrectGitIdentity() {
+
+        def gitUsername = "Spiderman"
+        def gitEmail = "peter.parker@dailybugle.com"
+
+        git.configureIdentity(gitUsername, gitEmail)
+
+        assertThat(shellCommands, containsInAnyOrder("git config user.name ${gitUsername}" as String, "git config user.email ${gitEmail}" as String))
+    }
+
 }
