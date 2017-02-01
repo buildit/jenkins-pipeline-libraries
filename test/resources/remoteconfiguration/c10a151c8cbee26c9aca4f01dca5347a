@@ -1,0 +1,4 @@
+credentials {
+    cloudfoundry = [username: "batman", password: "drowssap"]
+    sonar = [username: "spiderman", password: "terces"]
+}
