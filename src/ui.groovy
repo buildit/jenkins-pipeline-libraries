@@ -33,4 +33,16 @@ def selectTag(tags) {
     )
 }
 
+def stringbox(name, description, defaultValue = "") {
+    return [$class: 'hudson.model.StringParameterDefinition', defaultValue: defaultValue, description: description, name: name]
+}
+
+def passwordbox(name, description, defaultValue = "") {
+    return [$class: 'hudson.model.PasswordParameterDefinition', defaultValue: defaultValue, description: description, name: name]
+}
+
+def textbox(name, description, defaultValue = "") {
+    return [$class: 'hudson.model.TextParameterDefinition', defaultValue: defaultValue, description: description, name: name]
+}
+
 return this
