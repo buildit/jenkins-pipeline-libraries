@@ -9,7 +9,7 @@ try {
     node() {
 
         checkout scm
-        sh("git checkout master")
+        sh("git checkout master && git pull origin master")
 
         stage('create package') {
 
