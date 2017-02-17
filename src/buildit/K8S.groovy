@@ -1,18 +1,21 @@
 package buildit
 
-class k8s implements Serializable {
+class K8S implements Serializable {
 
     def CACHE_BASE = '/var/cache/'
+    def HOST_CACHE_BASE = '/tmp/'
     def DOCKER_IMG = 'docker:1.11'
     def KUBECTL_IMG = 'builditdigital/kube-utils'
 
     final script
     final JOB_NAME
     final cloud
+    final region
 
-    k8s(script, Cloud cloud) {
+    K8S(script, Cloud cloud, region = null) {
         this.script = script
         this.cloud = cloud
+        this.region = region
         JOB_NAME = script.env.JOB_NAME
     }
 
@@ -39,16 +42,39 @@ class k8s implements Serializable {
 
     def build(containers = [], volumes = [], steps) {
         def rand = 'build' + System.nanoTime()
-        script.podTemplate(label: rand,
-                containers: containers + [
-                        script.containerTemplate(name: 'docker', image: this.DOCKER_IMG, ttyEnabled: true, command: 'cat'),
-                        script.containerTemplate(name: 'kubectl', image: this.KUBECTL_IMG, ttyEnabled: true, command: 'cat')],
-                volumes: volumes + [
-                        script.hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-                        script.hostPathVolume(mountPath: '/var/cache', hostPath: '/tmp')
-                ]) {
+        def defaultContainers = [
+                script.containerTemplate(name: 'docker', image: this.DOCKER_IMG, ttyEnabled: true, command: 'cat'),
+                script.containerTemplate(name: 'kubectl', image: this.KUBECTL_IMG, ttyEnabled: true, command: 'cat')]
+        def defaultVolumes = [
+                script.hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+                script.hostPathVolume(mountPath: this.CACHE_BASE, hostPath: HOST_CACHE_BASE)
+        ]
+
+        if(cloud == Cloud.ec2) {
+            defaultContainers << script.containerTemplate(name: 'aws', image: 'cgswong/aws', ttyEnabled: true, command: 'cat')
+        }
+
+        script.podTemplate(
+                label: rand,
+                containers: containers + defaultContainers,
+                volumes: volumes + defaultVolumes) {
             script.node(rand) {
                 steps()
+            }
+        }
+    }
+
+    def dockerAuth() {
+        if(Cloud.ec2 == cloud) {
+            if(!region) {
+                throw new IllegalArgumentException('Region must be set')
+            }
+            def loginCmd
+            script.container('aws') {
+                loginCmd = script.sh script: "aws ecr get-login --region=${region}", returnStdout: true
+            }
+            inDocker {
+                script.sh loginCmd
             }
         }
     }
@@ -63,6 +89,14 @@ class k8s implements Serializable {
         inDocker {
             // Docker pipeline plugin does not work with kubernetes (see https://issues.jenkins-ci.org/browse/JENKINS-39664)
             script.sh "docker build -t $image:$tag $dir"
+        }
+    }
+
+    def dockerPush(image, tag) {
+        if(cloud != Cloud.local) {
+            inDocker {
+                script.sh "docker push $image:$tag"
+            }
         }
     }
 }
