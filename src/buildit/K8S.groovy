@@ -29,14 +29,14 @@ class K8S implements Serializable {
         script.sh "rm -rf ${cacheDir}/${dir} && cp -r ${dir} ${cacheDir}/"
     }
 
-    def helmDeploy(appName, env, image, tag) {
+    def helmDeploy(appName, env, image, tag, ns = 'default') {
         script.container('kubectl') {
             def deployment = "$appName-$env"
             def deploymentObj = "$deployment-$appName".take(24)
             def varsFile = "./k8s/${cloud}/vars/${env}.yaml"
-            script.sh "helm ls -q | grep $deployment || helm install ./k8s/${appName} -f $varsFile -n $deployment"
-            script.sh "helm upgrade $deployment ./k8s/${appName} -f $varsFile --set image.repository=$image --set image.tag=$tag"
-            script.sh "kubectl rollout status deployment/$deploymentObj"
+            script.sh "helm ls -q | grep $deployment || helm install ./k8s/${appName} -f $varsFile -n $deployment --namespace=${ns}"
+            script.sh "helm upgrade $deployment ./k8s/${appName} -f $varsFile --set image.repository=$image --set image.tag=$tag --namespace=${ns}"
+            script.sh "kubectl rollout status deployment/$deploymentObj -n=${ns}"
         }
     }
 
