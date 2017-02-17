@@ -20,7 +20,25 @@ class PomTest {
     @Test
     void shouldReturnPomVersion() {
         String result = pom.version(resourcePath("pom.xml", "pom"))
-        assertThat(result, equalTo("1.0.0"))
+        assertThat(result, equalTo("1.0.2"))
+    }
+
+    @Test
+    void shouldReturnPomMajorVersion() {
+        String result = pom.majorVersion(resourcePath("pom.xml", "pom"))
+        assertThat(result, equalTo("1"))
+    }
+
+    @Test
+    void shouldReturnPomMinorVersion() {
+        String result = pom.minorVersion(resourcePath("pom.xml", "pom"))
+        assertThat(result, equalTo("0"))
+    }
+
+    @Test
+    void shouldReturnPomPatchVersion() {
+        String result = pom.patchVersion(resourcePath("pom.xml", "pom"))
+        assertThat(result, equalTo("2"))
     }
 
     @Test
