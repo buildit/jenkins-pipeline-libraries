@@ -93,6 +93,7 @@ class K8S implements Serializable {
     }
 
     def dockerPush(image, tag) {
+        dockerAuth()
         if(cloud != Cloud.local) {
             inDocker {
                 script.sh "docker push $image:$tag"
