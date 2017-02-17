@@ -38,6 +38,11 @@ class K8S implements Serializable {
             script.sh "helm upgrade $deployment ./k8s/${appName} -f $varsFile --set image.repository=$image --set image.tag=$tag --namespace=${ns}"
             script.sh "kubectl rollout status deployment/$deploymentObj -n=${ns}"
         }
+        getServiceName(appName, env)
+    }
+
+    def getServiceName(app, env) {
+        "${app}-${env}-${app}".take(24)
     }
 
     def build(containers = [], volumes = [], steps) {
