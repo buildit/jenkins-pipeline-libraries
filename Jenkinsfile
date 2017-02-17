@@ -1,55 +1,47 @@
 @Library('buildit')
-
-pomVersion = ""
+        
+def shellLib = new shell()
+def pomLib = new pom()
+def gitLib = new git()
 
 try {
-    currentBuild.result = "SUCCESS"
 
-    stage('load libraries') {
-        node() {
+    node() {
 
-            shellUtil = new shell()
-            pomUtil = new pom()
-            gitUtil = new git()
+        checkout scm
 
-            jenkinsUnitRunner = load "test/groovy/jenkinsUnit/runner.groovy"
+        stage('create package') {
 
-            repositoryUrl = shellUtil.pipe("git config --get remote.origin.url")
-            pomVersion = pomUtil.version(pwd() + "/pom.xml")
-        }
-    }
-
-    stage('create package') {
-        node() {
-            def commitId = shellUtil.pipe("git rev-parse HEAD")
+            def commitId = shellLib.pipe("git rev-parse HEAD")
+            def pomVersion = pomLib.version(pwd() + "/pom.xml")
 
             sh("mvn clean package")
-            //jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
+
+            jenkinsUnitRunner = load("test/groovy/jenkinsUnit/runner.groovy")
+            jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
 
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                def authenticatedUrl = gitUtil.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
+                def repositoryUrl = shellLib.pipe("git config --get remote.origin.url")
+                def authenticatedUrl = gitLib.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
                 echo("setting remote to authenticated url : ${authenticatedUrl}")
                 sh("git remote set-url origin ${authenticatedUrl} &> /dev/null")
                 sh("git tag -af ${pomVersion} -m \"Built version: ${pomVersion}\" ${commitId}")
                 sh("git push --tags")
             }
         }
-    }
 
-    stage('promote package') {
-        node() {
+        stage('promote package') {
+            def pomVersion = pomLib.version(pwd() + "/pom.xml")
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: repositoryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def credentials = "'${env.USERNAME}':'${env.PASSWORD}'"
                 sh("curl -u ${credentials} -T target/*.zip \"https://api.bintray.com/content/buildit/maven/jenkins-pipeline-libraries/${pomVersion}/jenkins-pipeline-libraries-${pomVersion}.zip?publish=1\"")
             }
         }
-    }
 
-    stage('increment version') {
-        node() {
-            def majorVersion = pomUtil.majorVersion(pwd() + "/pom.xml")
-            def minorVersion = pomUtil.minorVersion(pwd() + "/pom.xml").toInteger()
-            def patchVersion = pomUtil.patchVersion(pwd() + "/pom.xml").toInteger()
+        stage('increment version') {
+            def majorVersion = pomLib.majorVersion(pwd() + "/pom.xml")
+            def minorVersion = pomLib.minorVersion(pwd() + "/pom.xml").toInteger()
+            def patchVersion = pomLib.patchVersion(pwd() + "/pom.xml").toInteger()
             def newVersion = "${majorVersion}.${minorVersion + 1}.0"
             if (patchVersion > 0) {
                 newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
@@ -65,15 +57,14 @@ try {
     }
 }
 catch (err) {
-    echo(err.toString())
+    echo("FAILURE: " + err.toString())
     currentBuild.result = "FAILURE"
     node() {
-        if(!pomVersion.equals("")){
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                // delete the tag off origin
-                sh("git push origin :refs/tags/${pomVersion}")
-                sh("git fetch --tags --prune")
-            }
+        def pomVersion = pomLib.version(pwd() + "/pom.xml")
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            // delete the tag off origin
+            sh("git push origin :refs/tags/${pomVersion}")
+            sh("git fetch --tags --prune")
         }
     }
     throw err
@@ -81,6 +72,7 @@ catch (err) {
 finally {
     stage('cleanup') {
         node() {
+            def repositoryUrl = shellLib.pipe("git config --get remote.origin.url")
             sh("git remote set-url origin ${repositoryUrl} &> /dev/null")
         }
     }
