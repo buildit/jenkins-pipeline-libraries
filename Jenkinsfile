@@ -20,7 +20,7 @@ try {
             jenkinsUnitRunner = load("test/groovy/jenkinsUnit/runner.groovy")
             jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def repositoryUrl = shellLib.pipe("git config --get remote.origin.url")
                 def authenticatedUrl = gitLib.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
                 echo("setting remote to authenticated url : ${authenticatedUrl}")
@@ -32,7 +32,7 @@ try {
 
         stage('promote package') {
             def pomVersion = pomLib.version(pwd() + "/pom.xml")
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: repositoryCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'global.bintray', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def credentials = "'${env.USERNAME}':'${env.PASSWORD}'"
                 sh("curl -u ${credentials} -T target/*.zip \"https://api.bintray.com/content/buildit/maven/jenkins-pipeline-libraries/${pomVersion}/jenkins-pipeline-libraries-${pomVersion}.zip?publish=1\"")
             }
@@ -47,7 +47,7 @@ try {
                 newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
             }
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh("mvn versions:set -DnewVersion=${newVersion} versions:commit")
                 sh("git add pom.xml")
                 sh("git commit -m'Bumping version to ${newVersion}'")
@@ -61,7 +61,7 @@ catch (err) {
     currentBuild.result = "FAILURE"
     node() {
         def pomVersion = pomLib.version(pwd() + "/pom.xml")
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: gitCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             // delete the tag off origin
             sh("git push origin :refs/tags/${pomVersion}")
             sh("git fetch --tags --prune")
