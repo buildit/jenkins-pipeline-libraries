@@ -9,6 +9,7 @@ try {
     node() {
 
         checkout scm
+        sh("git checkout master")
 
         stage('create package') {
 
