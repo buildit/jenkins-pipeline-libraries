@@ -69,11 +69,3 @@ catch (err) {
     }
     throw err
 }
-finally {
-    stage('cleanup') {
-        node() {
-            def repositoryUrl = shellLib.pipe("git config --get remote.origin.url")
-            sh("git remote set-url origin ${repositoryUrl} &> /dev/null")
-        }
-    }
-}
