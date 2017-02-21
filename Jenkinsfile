@@ -3,6 +3,7 @@
 def shellLib = new shell()
 def pomLib = new pom()
 def gitLib = new git()
+def bintray = new bintray()
 
 try {
 
