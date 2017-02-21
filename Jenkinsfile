@@ -37,14 +37,7 @@ try {
         }
 
         stage('increment version') {
-            def majorVersion = pomLib.majorVersion(pwd() + "/pom.xml")
-            def minorVersion = pomLib.minorVersion(pwd() + "/pom.xml").toInteger()
-            def patchVersion = pomLib.patchVersion(pwd() + "/pom.xml").toInteger()
-            def newVersion = "${majorVersion}.${minorVersion + 1}.0"
-            if (patchVersion > 0) {
-                newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
-            }
-
+            def newVersion = calculateNewPomVersion(pwd() + "/pom.xml")
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh("mvn versions:set -DnewVersion=${newVersion} versions:commit")
                 sh("git add pom.xml")
@@ -66,4 +59,15 @@ catch (err) {
         }
     }
     throw err
+}
+
+def calculateNewPomVersion(pomLocation){
+    def majorVersion = pomLib.majorVersion(pomLocation)
+    def minorVersion = pomLib.minorVersion(pomLocation).toInteger()
+    def patchVersion = pomLib.patchVersion(pomLocation).toInteger()
+    def newVersion = "${majorVersion}.${minorVersion + 1}.0"
+    if (patchVersion > 0) {
+        newVersion = "${majorVersion}.${minorVersion}.${patchVersion + 1}"
+    }
+    return newVersion
 }
