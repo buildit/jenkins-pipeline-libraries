@@ -1,5 +1,5 @@
 @Library('buildit')
-        
+
 def shellLib = new shell()
 def pomLib = new pom()
 def gitLib = new git()
@@ -32,11 +32,7 @@ try {
         }
 
         stage('promote package') {
-            def pomVersion = pomLib.version(pwd() + "/pom.xml")
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'global.bintray', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                def credentials = "'${env.USERNAME}':'${env.PASSWORD}'"
-                sh("curl -u ${credentials} -T target/*.zip \"https://api.bintray.com/content/buildit/maven/jenkins-pipeline-libraries/${pomVersion}/jenkins-pipeline-libraries-${pomVersion}.zip?publish=1\"")
-            }
+            bintray.upload('global.bintray', pomLib.artifactId(pwd() + "/pom.xml"), pomLib.version(pwd() + "/pom.xml"), 'zip', 'target/*.zip', 'buildit', 'maven')
         }
 
         stage('increment version') {
@@ -63,7 +59,7 @@ catch (err) {
     node() {
         def pomVersion = pomLib.version(pwd() + "/pom.xml")
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            // delete the tag off origin
+            // delete the tag from origin
             sh("git push origin :refs/tags/${pomVersion}")
             sh("git fetch --tags --prune")
         }
