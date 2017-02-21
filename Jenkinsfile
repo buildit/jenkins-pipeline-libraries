@@ -62,6 +62,7 @@ catch (err) {
 }
 
 def calculateNewPomVersion(pomLocation){
+    def pomLib = new pom()
     def majorVersion = pomLib.majorVersion(pomLocation)
     def minorVersion = pomLib.minorVersion(pomLocation).toInteger()
     def patchVersion = pomLib.patchVersion(pomLocation).toInteger()
