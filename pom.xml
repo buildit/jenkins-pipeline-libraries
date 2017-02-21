@@ -5,7 +5,7 @@
 
     <groupId>com.wiprodigital</groupId>
     <artifactId>jenkins-pipeline-libraries</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jenkins.version>2.32</jenkins.version>
