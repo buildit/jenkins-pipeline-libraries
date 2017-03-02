@@ -53,6 +53,9 @@ class MavenSettingsTest {
             assertThat(lines, hasItem(containsString("<id>${serverId}</id>")))
             assertThat(lines, hasItem(containsString("<username>${username}</username>")))
             assertThat(lines, hasItem(containsString("<password>${password}</password>")))
+            assertThat(lines, hasItem(containsString("</server>")))
+            assertThat(lines, hasItem(containsString("</servers>")))
+            assertThat(lines, hasItem(containsString("</settings>")))
         }
     }
 
