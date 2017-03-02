@@ -23,19 +23,17 @@ def withSettingsXml(serverId, credentialsId, closure) {
 }
 
 def createXml(serverId, username, password) {
-    def writer = new StringWriter()
-    def xml = new MarkupBuilder(writer)
-    xml.settings() {
-        delegate.servers() {
-            delegate.server() {
-                delegate.id(serverId)
-                delegate.username(username)
-                delegate.password(password)
-            }
-        }
-    }
-
-    return writer.toString()
+    """
+    <settings>
+        <servers>
+            <server>
+                <id>${serverId}</id>
+                <username>${username}</username>
+                <password>${password}</password>
+            </server>
+        </servers>
+    </settings>
+    """
 }
 
 return this
