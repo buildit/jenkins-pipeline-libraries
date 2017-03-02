@@ -28,25 +28,25 @@ class MavenSettingsTest {
 
     @Test
     void withSettingsXmlShouldHaveFileInClosure() {
-        mavensettings.withSettingsXml(serverId, credentialsId) { settingsXml ->
-            assertTrue(settingsXml.exists())
+        mavensettings.withSettingsXml(serverId, credentialsId) { settingsXmlPath ->
+            assertTrue(new File(settingsXmlPath).exists())
         }
     }
 
     @Test
     void withSettingsXmlShouldDeleteFileAfterwards() {
-        def settingsXmlFile
-        mavensettings.withSettingsXml(serverId, credentialsId) { settingsXml ->
-            settingsXmlFile = settingsXml
+        def settingsXml
+        mavensettings.withSettingsXml(serverId, credentialsId) { settingsXmlPath ->
+            settingsXml = new File(settingsXmlPath)
         }
 
-        assertFalse(settingsXmlFile.exists())
+        assertFalse(settingsXml.exists())
     }
 
     @Test
     void withSettingsXmlShouldCreateFileWithCorrectSettings() {
-        mavensettings.withSettingsXml(serverId, credentialsId) { settingsXml ->
-            def lines = settingsXml.collect { it }
+        mavensettings.withSettingsXml(serverId, credentialsId) { settingsXmlPath ->
+            def lines = new File(settingsXmlPath).collect { it }
             assertThat(lines, hasItem(containsString("<settings>")))
             assertThat(lines, hasItem(containsString("<servers>")))
             assertThat(lines, hasItem(containsString("<server>")))

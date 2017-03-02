@@ -3,7 +3,7 @@ import groovy.xml.MarkupBuilder
 import static java.util.UUID.randomUUID
 
 def withSettingsXml(serverId, credentialsId, closure) {
-    def settingsXml
+    def filename
     try {
         def uuid = randomUUID() as String
         filename = "${uuid}-settings.xml"
@@ -12,11 +12,11 @@ def withSettingsXml(serverId, credentialsId, closure) {
             writeFile file: filename, text: createXml(serverId, USERNAME, PASSWORD)
         }
 
-        settingsXml = new File(filename)
-        closure(settingsXml)
+        closure(filename)
     } finally {
         // Ensure temporary settings.xml is deleted.
-        if (settingsXml) {
+        def settingsXml = new File(filename)
+        if (settingsXml.exists()) {
             settingsXml.delete()
         }
     }
