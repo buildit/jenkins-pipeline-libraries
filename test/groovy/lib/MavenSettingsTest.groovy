@@ -46,22 +46,18 @@ class MavenSettingsTest {
     @Test
     void withSettingsXmlShouldCreateFileWithCorrectSettings() {
         mavensettings.withSettingsXml(serverId, credentialsId) { settingsXmlPath ->
-            def lines = new File(settingsXmlPath).collect { it }
-            assertThat(lines, hasItem(containsString("<settings>")))
-            assertThat(lines, hasItem(containsString("<servers>")))
-            assertThat(lines, hasItem(containsString("<server>")))
-            assertThat(lines, hasItem(containsString("<id>${serverId}</id>")))
-            assertThat(lines, hasItem(containsString("<username>${username}</username>")))
-            assertThat(lines, hasItem(containsString("<password>${password}</password>")))
-            assertThat(lines, hasItem(containsString("</server>")))
-            assertThat(lines, hasItem(containsString("</servers>")))
-            assertThat(lines, hasItem(containsString("</settings>")))
+            def xml = new File(settingsXmlPath).text
+            validateSettingsXmlContent(xml)
         }
     }
 
     @Test
     void createXmlShouldGenerateSettingsXml() {
         def xml = mavensettings.createXml(serverId, username, password)
+        validateSettingsXmlContent(xml)
+    }
+
+    private void validateSettingsXmlContent(xml) {
         def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         def inputStream = new ByteArrayInputStream(xml.bytes)
         def xmlDoc = builder.parse(inputStream)
