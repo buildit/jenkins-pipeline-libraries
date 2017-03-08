@@ -49,7 +49,7 @@ class K8S implements Serializable {
         def rand = 'build' + System.nanoTime()
         def defaultContainers = [
                 script.containerTemplate(name: 'docker', image: this.DOCKER_IMG, ttyEnabled: true, command: 'cat'),
-                script.containerTemplate(name: 'kubectl', image: this.KUBECTL_IMG, ttyEnabled: true, command: 'cat')]
+                script.containerTemplate(name: 'kubectl', image: this.KUBECTL_IMG, ttyEnabled: true, command: 'cat', alwaysPullImage: true)]
         def defaultVolumes = [
                 script.hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
                 script.hostPathVolume(mountPath: this.CACHE_BASE, hostPath: HOST_CACHE_BASE)
