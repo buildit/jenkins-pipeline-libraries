@@ -13,12 +13,12 @@ def configureJava(String name='java') {
     return path
 }
 
-def configureAndroid(String name='android', String pathToExecutable='', String sdkOpts='"platform-tools"') {
+def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"platform-tools"') {
     def path = configureTool(name, pathToExecutable)
     env.ANDROID_HOME = path
     echo("Configured ANDROID_HOME: ${path}")
 
-    sh("(while sleep 2; do echo \"y\"; done) | ${path}/tools/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
+    sh("(while sleep 2; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
 }
 
 def configureTool(String name, String pathToExecutable="bin") {
