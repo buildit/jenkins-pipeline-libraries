@@ -20,6 +20,7 @@ def configureAndroid(String name='android', String pathToExecutable='tools', Str
 
 //    sh("(while sleep 2; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
     sh("echo \"y\" | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
+    echo(sh(script: "ls ${path}/licenses", returnStdout: true))
 }
 
 def configureTool(String name, String pathToExecutable="bin") {
