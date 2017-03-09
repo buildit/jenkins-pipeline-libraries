@@ -20,7 +20,7 @@ def configureAndroid(String name='android', String pathToExecutable='tools', Str
 
 //    sh("(while sleep 2; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
 //    sh("echo 'y' | ${path}/${pathToExecutable}/sdkmanager ${sdkOpts}")
-    sh("echo 'y' | android update sdk --no-ui --filter ${sdkOpts}")
+    sh("echo 'y' | android update sdk --no-ui --filter 1,2")
 }
 
 def configureTool(String name, String pathToExecutable="bin") {
