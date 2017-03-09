@@ -18,7 +18,7 @@ def configureAndroid(String name='android', String pathToExecutable='tools', Str
     env.ANDROID_HOME = path
     echo("Configured ANDROID_HOME: ${path}")
 
-    sh("yes y | ${path}/${pathToExecutable}/android update sdk --no-ui ${sdkOpts}")
+    sh("yes y | ${path}/${pathToExecutable}/android update sdk --no-ui --filter ${sdkOpts}")
 }
 
 def configureTool(String name, String pathToExecutable="bin") {
