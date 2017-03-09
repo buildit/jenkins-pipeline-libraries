@@ -13,10 +13,22 @@ def configureJava(String name='java') {
     return path
 }
 
-def configureAndroid(String name='android', String pathToExecutable='tools') {
+def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='1,2') {
     def path = configureTool(name, pathToExecutable)
     env.ANDROID_HOME = path
     echo("Configured ANDROID_HOME: ${path}")
+
+    sh("""
+            expect -c '
+            set timeout -1;
+            spawn android - update sdk --no-ui ${sdkOpts};
+            expect {
+                "Do you accept the license" { exp_send "y\r" ; exp_continue }
+                eof
+            }
+            '
+    """)
+//    sh("${path}/android update sdk --no-ui ${sdkOpts}")
 }
 
 def configureTool(String name, String pathToExecutable="bin") {
