@@ -13,6 +13,12 @@ def configureJava(String name='java') {
     return path
 }
 
+def configureAndroid(String name='android', String pathToExecutable='tools') {
+    def path = configureTool(name, pathToExecutable)
+    env.ANDROID_HOME = path
+    echo("Configured ANDROID_HOME: ${path}")
+}
+
 def configureTool(String name, String pathToExecutable="bin") {
     def path = tool name
     def executablePath = stripLastSlash("${path}/${pathToExecutable}")
