@@ -19,9 +19,8 @@ def configureAndroid(String name='android', String pathToExecutable='tools', Str
     echo("Configured ANDROID_HOME: ${path}")
 
 //    sh("(while sleep 2; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
-    sh("touch ${env.JENKINS_HOME}/.android/repositories.cfg")
-    sh("echo \"y\" | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
-    echo(sh(script: "ls ${path}/licenses", returnStdout: true))
+//    sh("echo 'y' | ${path}/${pathToExecutable}/sdkmanager ${sdkOpts}")
+    sh("echo 'y' | android sdk update --no-ui --filter ${sdkOpts}")
 }
 
 def configureTool(String name, String pathToExecutable="bin") {
