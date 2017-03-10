@@ -18,13 +18,13 @@ def configureAndroid(String name='android', String pathToExecutable='tools', Str
 //    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
 
 //    env.PATH = "${env.PATH}:${path}"
-    androidHome = "path/${pathToExecutable}"
+    androidHome = "${path}/${pathToExecutable}"
     env.ANDROID_HOME = androidHome
     env.PATH = "${env.PATH}:${androidHome}"
     echo("Configured ANDROID_HOME: ${env.ANDROID_HOME}")
     echo("PATH is now ${env.PATH}")
 
-    sh("(while sleep 4; do echo \"y\"; done) | ${path}/bin/sdkmanager ${sdkOpts}")
+    sh("(while sleep 4; do echo \"y\"; done) | ${androidHome}/bin/sdkmanager ${sdkOpts}")
 
     // Android looks for the licenses in the wrong directory, so we symlink it.
     sh("ln -s ${path}/licenses ${path}/${pathToExecutable}/licenses")
