@@ -18,7 +18,8 @@ def configureAndroid(String name='android', String pathToExecutable='tools', Str
 //    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
 
 //    env.PATH = "${env.PATH}:${path}"
-    env.ANDROID_HOME = path
+    sh("mkdir ${path}/sdk")
+    env.ANDROID_HOME = "${path}/sdk"
     env.PATH = "${env.PATH}:${path}/${pathToExecutable}"
     echo("Configured ANDROID_HOME: ${env.ANDROID_HOME}")
     echo("PATH is now ${env.PATH}")
