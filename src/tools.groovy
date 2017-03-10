@@ -15,12 +15,13 @@ def configureJava(String name='java') {
 
 def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"build-tools;25.0.2" "platform-tools"') {
     def path = tool name
-    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
+//    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
+    env.PATH = "${env.PATH}:${path}"
     env.ANDROID_HOME = path
     echo("Configured ANDROID_HOME: ${path}")
     echo("PATH is now ${env.PATH}")
 
-    sh("(while sleep 4; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
+    sh("(while sleep 4; do echo \"y\"; done) | ${path}/bin/sdkmanager ${sdkOpts}")
 //    sh("echo 'y' | ${path}/${pathToExecutable}/sdkmanager ${sdkOpts}")
 //    sh("echo 'y' | android update sdk --no-ui --filter 1,2")
 }
