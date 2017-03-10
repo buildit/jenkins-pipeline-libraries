@@ -13,7 +13,7 @@ def configureJava(String name='java') {
     return path
 }
 
-def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"build-tools;25.0.2" "platform-tools"') {
+def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"platform-tools"') {
     def path = tool name
 //    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
 
