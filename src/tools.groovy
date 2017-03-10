@@ -16,8 +16,11 @@ def configureJava(String name='java') {
 def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"build-tools;25.0.2" "platform-tools"') {
     def path = tool name
 //    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
+
+    androidHome = path.substring(0, path.lastIndexOf("/"))
+
     env.PATH = "${env.PATH}:${path}"
-    env.ANDROID_HOME = path
+    env.ANDROID_HOME = androidHome
     echo("Configured ANDROID_HOME: ${path}")
     echo("PATH is now ${env.PATH}")
 
@@ -36,7 +39,7 @@ def configureTool(String name, String pathToExecutable="bin") {
 }
 
 private stripLastSlash(String path){
-    (path.endsWith("/")) ? path.substring(0, path.lastIndexOf("/")) : path;
+    (path.endsWith("/")) ? path.substring(0, path.lastIndexOf("/")) : path
 }
 
 return this
