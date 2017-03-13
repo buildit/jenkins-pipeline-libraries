@@ -13,21 +13,21 @@ def configureJava(String name='java') {
     return path
 }
 
-def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"build-tools;25.0.2"') {
+def configureAndroid(String name='android', String pathToExecutable='tools', String sdkOpts='"platform-tools" "build-tools;25.0.2"') {
     def path = tool name
 //    env.PATH = "${env.PATH}:${path}:${path}/tools:${path}/platform-tools"
 
 //    env.PATH = "${env.PATH}:${path}"
-    sh("mkdir ${path}/sdk")
-    env.ANDROID_HOME = "${path}/sdk"
-    env.PATH = "${env.PATH}:${path}/${pathToExecutable}"
+    env.ANDROID_HOME = path
+//    env.PATH = "${env.PATH}:${path}/${pathToExecutable}"
     echo("Configured ANDROID_HOME: ${env.ANDROID_HOME}")
     echo("PATH is now ${env.PATH}")
 
-    sh("(while sleep 4; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
+    sh("(while sleep 3; do echo \"y\"; done) | ${path}/${pathToExecutable}/bin/sdkmanager ${sdkOpts}")
 
     // Android looks for the licenses in the wrong directory, so we symlink it.
-    sh("ln -s ${path}/licenses ${path}/${pathToExecutable}/licenses")
+    // No it doesn't, just the stupid thing overriding ANDROID_HOME.
+//    sh("ln -s ${path}/licenses ${path}/${pathToExecutable}/licenses")
 //    sh("echo 'y' | ${path}/${pathToExecutable}/sdkmanager ${sdkOpts}")
 //    sh("echo 'y' | android update sdk --no-ui --filter 1,2")
 }
