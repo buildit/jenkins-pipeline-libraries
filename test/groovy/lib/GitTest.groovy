@@ -27,10 +27,12 @@ class GitTest {
     @Test
     void shouldSetCorrectRemoteUrl() {
 
+        https://github.com/buildit/jenkins-pipeline-libraries.git
+
         def source = "feature"
         def target = "master"
-        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
-        def authenticatedUrl = "https://USERNAME:PASSWORD@stash.hk.hsbc/scm/rdp/workflowLibs.git "
+        def repositoryUrl = "https://github.com/buildit/jenkins-pipeline-libraries.git"
+        def authenticatedUrl = "https://USERNAME:PASSWORD@github.com/buildit/jenkins-pipeline-libraries.git "
         def credentialsId = UUID.randomUUID().toString()
 
         git.mergeBranch(source, target, repositoryUrl, credentialsId)
@@ -44,7 +46,7 @@ class GitTest {
 
         def source = "feature"
         def target = "master"
-        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
+        def repositoryUrl = "https://github.com/buildit/jenkins-pipeline-libraries.git"
         def credentialsId = UUID.randomUUID().toString()
 
         git.mergeBranch(source, target, repositoryUrl, credentialsId)
@@ -57,7 +59,7 @@ class GitTest {
 
         def source = "feature"
         def target = "master"
-        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
+        def repositoryUrl = "https://github.com/buildit/jenkins-pipeline-libraries.git"
         def credentialsId = UUID.randomUUID().toString()
 
         git.mergeBranch(source, target, repositoryUrl, credentialsId)
@@ -70,7 +72,7 @@ class GitTest {
 
         def source = "feature"
         def target = "master"
-        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
+        def repositoryUrl = "https://github.com/buildit/jenkins-pipeline-libraries.git"
         def credentialsId = UUID.randomUUID().toString()
 
         git.mergeBranch(source, target, repositoryUrl, credentialsId)
@@ -83,7 +85,7 @@ class GitTest {
 
         def source = "feature"
         def target = "master"
-        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
+        def repositoryUrl = "https://github.com/buildit/jenkins-pipeline-libraries.git"
         def credentialsId = UUID.randomUUID().toString()
 
         def args = null
@@ -101,7 +103,7 @@ class GitTest {
     void shouldListBranches() {
 
         def branch = "master"
-        def repositoryUrl = "https://stash.hk.hsbc/scm/rdp/workflowLibs.git"
+        def repositoryUrl = "https://github.com/buildit/jenkins-pipeline-libraries.gitZ"
         def credentialsId = UUID.randomUUID().toString()
         def expectedBranches = ["master", "release/1.0"]
 
