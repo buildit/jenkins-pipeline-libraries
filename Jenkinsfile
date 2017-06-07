@@ -22,7 +22,7 @@ try {
             jenkinsUnitRunner = load("test/groovy/jenkinsUnit/runner.groovy")
             jenkinsUnitRunner.run("test/groovy/jenkinsUnit/test")
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 def repositoryUrl = shellLib.pipe("git config --get remote.origin.url")
                 def authenticatedUrl = gitLib.authenticatedUrl(repositoryUrl, env.USERNAME, env.PASSWORD)
                 echo("setting remote to authenticated url : ${authenticatedUrl}")
@@ -33,12 +33,12 @@ try {
         }
 
         stage('promote package') {
-            bintray.upload('global.bintray', pomLib.artifactId(pwd() + "/pom.xml"), pomLib.version(pwd() + "/pom.xml"), 'zip', 'target/*.zip', 'buildit', 'maven')
+            bintray.upload('bintray-credentials', pomLib.artifactId(pwd() + "/pom.xml"), pomLib.version(pwd() + "/pom.xml"), 'zip', 'target/*.zip', 'buildit', 'maven')
         }
 
         stage('increment version') {
             def newVersion = calculateNewPomVersion(pwd() + "/pom.xml")
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh("mvn versions:set -DnewVersion=${newVersion} versions:commit")
                 sh("git add pom.xml")
                 sh("git commit -m'Bumping version to ${newVersion}'")
@@ -52,7 +52,7 @@ catch (err) {
     currentBuild.result = "FAILURE"
     node() {
         def pomVersion = pomLib.version(pwd() + "/pom.xml")
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "global.github", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "github-credentials", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             // delete the tag from origin
             sh("git push origin :refs/tags/${pomVersion}")
             sh("git fetch --tags --prune")
