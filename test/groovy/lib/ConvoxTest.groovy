@@ -96,4 +96,23 @@ class ConvoxTest {
         assertThat(errors.size(), equalTo(1))
         assertThat(errors[0], not(empty()))
     }
+
+    @Test
+    void shouldEnsureCertificateSet() {
+        shell.pipe = { String s -> return "foo" }
+
+        convox.ensureCertificateSet("test-app", "node", 443, "cert-1234")
+
+        assertThat(shellCommands.size(), equalTo(1))
+        assertThat(shellCommands[0], startsWith("convox ssl update"))
+    }
+
+    @Test
+    void shouldEnsureCertificateSetAlreadySet() {
+        shell.pipe = { String s -> return "cert-1234" }
+
+        convox.ensureCertificateSet("test-app", "node", 443, "cert-1234")
+
+        assertThat(shellCommands.size(), equalTo(0))
+    }
 }

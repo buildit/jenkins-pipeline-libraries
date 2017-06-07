@@ -34,4 +34,11 @@ def ensureSecurityGroupSet(appName, securityGroup) {
     }
 }
 
+def ensureCertificateSet(appName, process, port, certificate) {
+    def currentCert = getShell().pipe("convox ssl --app ${appName} | grep ${process}:${port} | cut -d ' ' -f3").trim()
+    if (currentCert != certificate) {
+        sh "convox ssl update ${process}:${port} ${certificate} --app ${appName}"
+    }
+}
+
 return this
