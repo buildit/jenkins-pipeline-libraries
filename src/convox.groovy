@@ -6,6 +6,14 @@ def login(convoxRack, convoxPassword) {
     sh "convox login ${convoxRack} --password ${convoxPassword}"
 }
 
+def ensureApplicationCreated(appName) {
+    def result = sh returnStatus: true, script: "convox apps info ${appName}"
+    if (!result) {
+        sh "convox apps create ${appName}"
+        waitUntilDeployed(appName)
+    }
+}
+
 def deploy(appName, description) {
     sh "convox deploy --app ${appName}-staging --description '${description}'"
 }
