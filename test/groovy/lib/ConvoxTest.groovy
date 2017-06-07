@@ -115,4 +115,23 @@ class ConvoxTest {
 
         assertThat(shellCommands.size(), equalTo(0))
     }
+
+    @Test
+    void shouldSetParameterInternalSet() {
+        shell.pipe = { String s -> return "" }
+
+        convox.ensureParameterSet("test-app", "Internal", "No")
+
+        assertThat(shellCommands.size(), equalTo(1))
+        assertThat(shellCommands[0], startsWith("convox apps params set"))
+    }
+
+    @Test
+    void shouldEnsureParameterInternalSet() {
+        shell.pipe = { String s -> return "Yes" }
+
+        convox.ensureParameterSet("test-app", "Internal", "Yes")
+
+        assertThat(shellCommands.size(), equalTo(0))
+    }
 }

@@ -20,6 +20,15 @@ def waitUntilDeployed(appName) {
     error "Application failed to start running within 5 minutes"
 }
 
+def ensureParameterSet(appName, parameter, value) {
+    def currentValue = getShell().pipe("convox apps params --app ${appName} | grep ${parameter} | sed 's/${parameter} *\\(.*\\)/\\1/'").trim()
+
+    if (currentValue != value) {
+        sh "convox apps params set ${parameter}=${value} --app ${appName}"
+        waitUntilDeployed(appName)
+    }
+}
+
 def ensureSecurityGroupSet(appName, securityGroup) {
 
     if (!securityGroup.startsWith('sg-')) {
@@ -27,17 +36,14 @@ def ensureSecurityGroupSet(appName, securityGroup) {
         return
     }
 
-    def groupId = getShell().pipe("convox apps params --app ${appName} | grep SecurityGroup | sed 's/SecurityGroup *\\(.*\\)/\\1/'").trim()
-
-    if (groupId != securityGroup) {
-        sh "convox apps params set SecurityGroup=${securityGroup} --app ${appName}"
-    }
+    ensureParameterSet(appName, 'SecurityGroup', securityGroup)
 }
 
 def ensureCertificateSet(appName, process, port, certificate) {
     def currentCert = getShell().pipe("convox ssl --app ${appName} | grep ${process}:${port} | cut -d ' ' -f3").trim()
     if (currentCert != certificate) {
         sh "convox ssl update ${process}:${port} ${certificate} --app ${appName}"
+        waitUntilDeployed("${appName}")
     }
 }
 
