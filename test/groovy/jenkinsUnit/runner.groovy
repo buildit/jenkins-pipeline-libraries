@@ -2,6 +2,7 @@ package jenkinsUnit
 
 import groovy.json.JsonSlurper
 
+@NonCPS
 def run(location) {
     def items = [location]
     if (isDirectory(location)) {
@@ -17,6 +18,7 @@ def run(location) {
     }
 }
 
+@NonCPS
 def listing(dir) {
     String contents = pipe($/find ${
         dir
@@ -24,11 +26,13 @@ def listing(dir) {
     new JsonSlurper().parseText(contents)
 }
 
+@NonCPS
 def isDirectory(dir) {
     def contents = pipe("find ${dir} -type d -maxdepth 0")
     contents.length() > 0
 }
 
+@NonCPS
 def pipe(command) {
     sh(script: command, returnStdout: true)
 }
