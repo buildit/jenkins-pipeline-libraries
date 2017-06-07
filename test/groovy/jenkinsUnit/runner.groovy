@@ -1,6 +1,7 @@
 package jenkinsUnit
 
 import groovy.json.JsonSlurper
+import com.cloudbees.groovy.cps.NonCPS
 
 @NonCPS
 def run(location) {
