@@ -8,7 +8,7 @@ def login(convoxRack, convoxPassword) {
 
 def ensureApplicationCreated(appName) {
     def result = sh returnStatus: true, script: "convox apps info ${appName}"
-    if (!result) {
+    if (result) {
         sh "convox apps create ${appName}"
         waitUntilDeployed(appName)
     }
