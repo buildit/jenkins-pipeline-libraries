@@ -39,7 +39,7 @@ def ensureParameterSet(appName, parameter, value) {
 }
 
 def ensureSecurityGroupSet(appName, securityGroup) {
-    if (!securityGroup.startsWith('sg-')) {
+    if (securityGroup != '' && !securityGroup.startsWith('sg-')) {
         error "Ensure you use the AWS Group ID for the security group"
         return
     }
