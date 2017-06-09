@@ -19,7 +19,7 @@ def deploy(appName, description) {
 }
 
 def waitUntilDeployed(appName) {
-    for (int i=0; i < 50; i++) {
+    for (int i=0; i < 20; i++) {
         def status = getShell().pipe("convox apps info --app ${appName} | grep Status | sed 's/Status *\\(.*\\)/\\1/'").trim()
         echo "${appName} is ${status}"
         if (status == "running") return
