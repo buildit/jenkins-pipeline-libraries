@@ -2,7 +2,7 @@ def getShell() {
     new shell()
 }
 
-def login(convoxRack, credentialsId) {
+def login(convoxRack, credentialsId = "convox") {
     withCredentials([[$class: 'StringBinding', credentialsId: credentialsId, variable: 'ACCESS_TOKEN']]) {
         sh "convox login ${convoxRack} --password ${ACCESS_TOKEN}"
     }
