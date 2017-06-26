@@ -29,9 +29,9 @@ class ConvoxTest {
     @Test
     void shouldLogin() {
         def convoxRack = "convox.rack"
-        def convoxPassword = "password"
+        def convoxCredential = "convox-password"
 
-        convox.login(convoxRack, convoxPassword)
+        convox.login(convoxRack, convoxCredential)
 
         assertThat(shellCommands[0], startsWith("convox login"))
     }

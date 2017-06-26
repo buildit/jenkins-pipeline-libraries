@@ -15,8 +15,13 @@ class WorkflowStub extends Script {
     def withCredentials(Collection args, cl) {
         env = [:]
         def values = args.iterator().next()
-        env.put(values.usernameVariable, values.usernameVariable)
-        env.put(values.passwordVariable, values.passwordVariable)
+        if (values.$class == 'UsernamePasswordMultiBinding') {
+            env.put(values.usernameVariable, values.usernameVariable)
+            env.put(values.passwordVariable, values.passwordVariable)
+        }
+        if (values.$class == 'StringBinding') {
+            env.put(values.variable, values.variable)            
+        }
         cl()
     }
 

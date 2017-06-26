@@ -2,8 +2,10 @@ def getShell() {
     new shell()
 }
 
-def login(convoxRack, convoxPassword) {
-    sh "convox login ${convoxRack} --password ${convoxPassword}"
+def login(convoxRack, credentialsId) {
+    withCredentials([[$class: 'StringBinding', credentialsId: credentialsId, variable: 'ACCESS_TOKEN']]) {
+        sh "convox login ${convoxRack} --password ${ACCESS_TOKEN}"
+    }
 }
 
 def ensureApplicationCreated(appName) {
