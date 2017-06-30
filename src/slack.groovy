@@ -1,9 +1,5 @@
 import groovy.json.JsonOutput
 
-def getShell() {
-    new shell()
-}
-
 def notify(title, text, color, icon, channel) {
     def slackURL = 'https://hooks.slack.com/services/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'
 

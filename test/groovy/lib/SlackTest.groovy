@@ -17,7 +17,6 @@ class SlackTest {
         shellCommands = []
         slack = ScriptLoader.load("slack")
         slack.metaClass.sh = { String s -> shellCommands.add(s) }
-        slack.metaClass.getShell = { [pipe: { s -> '' }] }
     }
 
     @Test
