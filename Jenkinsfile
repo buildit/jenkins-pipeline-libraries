@@ -5,6 +5,9 @@ pipeline {
     disableConcurrentBuilds()
     skipStagesAfterUnstable()
   }
+  triggers {
+    pollSCM('* * * * *')
+  }
   tools {
     maven 'apache-maven-3.5.0'
   }
